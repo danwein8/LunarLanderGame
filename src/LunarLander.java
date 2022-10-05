@@ -29,6 +29,28 @@ public class LunarLander extends Rect {
 		// make new flame and crash animations when you get the sprite 
 	}
 	
+	public double getWeight() {
+		return this.weight;
+	}
+	
+	// set the weight based on the remaining fuel, less fuel means lighter lander means
+	// more responsive lift and moving left and right
+	public double getCurrentWeight(double weight, double fuel) {
+		return weight + (fuel / 1.0);
+	}
+	
+	public double getFuel() {
+		return this.fuel;
+	}
+	
+	// burn fuel when maneuvering the lander in any direction
+	public void burnFuel() {
+		// burn one sixtieth of fuel at a time because its called 60 times a second, should have 100
+		// seconds of total flight/maneuvering time
+		double oneSixtiethSec = 0.02;
+		this.fuel -= oneSixtiethSec;
+	}
+	
 	public void lift(double vy) {
 		this.vy = -vy;
 	}
@@ -44,6 +66,9 @@ public class LunarLander extends Rect {
 		
 		vx += ax;
 		vy += ay;
+		
+		if (vx > 0.001) vx *= 0.98;
+		if (vx < -0.001) vx *= 0.98;
 	}
 	
 	public void moveLeft(double dx) {
@@ -60,12 +85,24 @@ public class LunarLander extends Rect {
 	 * were just moving, slowly decelerating.
 	 */
 	
+	public void liftAccel(double dy) {
+		ay -= dy;
+	}
+	
 	public void moveLeftAccel(double dx) {
-		ax = -dx;
+		ax -= dx;
 	}
 	
 	public void moveRightAccel(double dx) {
-		ax = dx;
+		ax += dx;
+	}
+	
+	public void gravityAccel(double dy) {
+		ay += dy;
+	}
+	
+	public void sideDecel(double dx) {
+		ax *= dx;
 	}
 	
 	public void draw(Graphics g) {
