@@ -2,8 +2,14 @@ import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 
-public class GameTest1 extends Applet implements Runnable, KeyListener {
+public class GameTest1 extends Applet implements Runnable, KeyListener 
+{
 	
+	private static final long serialVersionUID = 1L;
+	
+	private GraphicsDevice device;
+	private DisplayMode mode;
+
 	Thread t;
 	
 	Image 	 offscreen_i;
@@ -64,10 +70,14 @@ public class GameTest1 extends Applet implements Runnable, KeyListener {
 	
 	public void init()
 	{
-		offscreen_i = createImage(1600, 1200);
+		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		device = environment.getDefaultScreenDevice();
+		mode = device.getDisplayMode();
+		
+		offscreen_i = createImage((mode.getWidth() * 10), mode.getHeight());
 		
 		offscreen_g = offscreen_i.getGraphics();
-		
+				
 		requestFocus();
 		
 		addKeyListener(this);
@@ -97,29 +107,9 @@ public class GameTest1 extends Applet implements Runnable, KeyListener {
 				if (lander.ax > -0.3) lander.moveLeftAccel(3 / lander.getCurrentWeight(lander.getWeight(), lander.getFuel()));
 				if (lander.fuel > 0) lander.burnFuel();
 			}
-			
-			//if (lander.getFuel() > 0) {
-
-				/*if (up_pressed) {
-					lander.lift(150 / lander.getCurrentWeight(lander.getWeight(), lander.getFuel()));
-					lander.burnFuel();
-				}
-
-				if (lt_pressed) {
-					lander.moveLeft(200 / lander.getCurrentWeight(lander.getWeight(), lander.getFuel()));
-					lander.burnFuel();
-				}
-
-				if (rt_pressed) {
-					lander.moveRight(200 / lander.getCurrentWeight(lander.getWeight(), lander.getFuel()));
-					lander.burnFuel();
-				}
-			}*/
-			
-			//System.out.println("weight: " + lander.weight);
-			//System.out.println("fuel: " + lander.fuel);
-			//System.out.println("Current Weight: "  + lander.getCurrentWeight(lander.getWeight(), lander.getFuel()));
-			//System.out.println("AY: " + lander.ay);
+			// function to move the camera to follow the lander
+			if (lander.vx != 0) Camera.move((int)lander.vx);
+			if (lander.x < 0) lander.x = 0;
 			
 			lander.moveBasedOnPhysics();
 			
@@ -134,21 +124,22 @@ public class GameTest1 extends Applet implements Runnable, KeyListener {
 			repaint();
 			try 
 			{
-				t.sleep(15);
+				Thread.sleep(15);
 			}
 			catch (Exception x) { };
 		}
 	}
 	
 	public void update(Graphics g) {
-		offscreen_g.clearRect(0, 0, 1600, 1200);
+		offscreen_g.clearRect(0, 0, (mode.getWidth() * 10), mode.getHeight());
 		
 		paint(offscreen_g);
 		
-		g.drawImage(offscreen_i, 0, 0, null);
+		g.drawImage(offscreen_i, 0-Camera.x, 0-Camera.y, null);
 	}
 	
 	public void paint(Graphics g) {
+		
 		lander.draw(g);
 		
 		for (int i = 0; i < ground.length; i++) {
@@ -161,19 +152,22 @@ public class GameTest1 extends Applet implements Runnable, KeyListener {
 		
 		g.setColor(Color.blue);
 		g.setFont(fuelFont);
-		g.drawString(String.valueOf(lander.getFuel()), 10, 10);
+		g.drawString("FUEL" + String.valueOf(String.format("%.2f", lander.getFuel())), 10+Camera.x, 20+Camera.y);
+		g.drawString("LANDER VX: " + String.format("%.2f", lander.vx) + "LANDER VY: " + String.format("%.2f", lander.vy), 10+Camera.x, 40+Camera.y);
+		g.drawString("LANDER AX: " + String.format("%.2f", lander.ax) + "LANDER AY: " + String.format("%.2f", lander.ay), 10+Camera.x, 60+Camera.y);
+		g.drawString("LANDER X: " + String.format("%.2f", lander.x) + "LANDER Y: " + String.format("%.2f", lander.y), 10+Camera.x, 80+Camera.y);
 		
 		if (lander.overlaps(landingPlatform)) {
 			g.setColor(Color.green);
 			g.setFont(font);
-			g.drawString(win, 300, 400);
+			g.drawString(win, 300+Camera.x, 400+Camera.y);
 		}
 		
 		for (int i = 0; i < ground.length; i++) {
 			if (lander.overlaps(ground[i])) {
 				g.setColor(Color.red);
 				g.setFont(font);
-				g.drawString(lose, 500, 400);
+				g.drawString(lose, 500+Camera.x, 400+Camera.y);
 			}
 		}
 	}

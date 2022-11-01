@@ -1,6 +1,7 @@
 import java.awt.*;
 
-public class LunarLander extends Rect {
+public class LunarLander extends Rect 
+{
 	
 	// Acceleration
 	double ax;
@@ -106,7 +107,7 @@ public class LunarLander extends Rect {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)x, (int)y, w, h);
+		g.drawRect((int)(x), (int)(y), w, h);
 	}
 	
 }
