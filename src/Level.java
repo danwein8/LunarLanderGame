@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Random;
 
 /**
  * Procedurally generated levels: the length and width of the tunnel, along with the variation of the walls
@@ -64,7 +65,12 @@ public class Level
 	/**
 	 * boolean state variable for making gaps in the floor and ceiling, rarely false (not a lot of gaps)
 	 */
-	boolean exists;
+	boolean exists = true;
+	
+	/**
+	 * Array full of colors for screen sector testing
+	 */
+	Color[] colors = {Color.blue, Color.green, Color.red, Color.yellow, Color.gray, Color.black, Color.white};
 	
 	/**
 	 * only using the least significant 16 bits of the x and y location so it limits the size of the level before
@@ -81,12 +87,23 @@ public class Level
 		mode = device.getDisplayMode();
 		// TODO: abort construction if y value is in the tunnel, this constructor needs to output a ceiling and 
 		// a floor with an empty, tunnel-like middle.
+		
+		Random rand = new Random((long)((x + y)));
+		exists = (rand.nextInt(40 - 1) + 1) != 1;
+		if (!exists) return;
+		/*
 		nLehmer = (x & 0xFFFF) << 16 | (y & 0xFFFF);
 		
 		exists = !(randInt(0, 40) == 1);
 		if (!exists) return;
+		*/
 		
-		deltaLength = randInt(variation, variation);
+		//deltaLength = randInt(variation, variation);
+	}
+	
+	public void doesntExist()
+	{
+		exists = false;
 	}
 	
 	/**
@@ -112,7 +129,7 @@ public class Level
 	 * @param max: the high end of the range of numbers the random number can be between
 	 * @return a random integer number between min and max
 	 */
-	private int randInt(int min, int max)
+	public int randInt(int min, int max)
 	{
 		return (Lehmer32() % (max - min)) + min;
 	}
@@ -123,7 +140,7 @@ public class Level
 	 * @param max: the high end of the range of numbers the random number can be between
 	 * @return a random double number between min and max
 	 */
-	private double randDouble(double min, double max)
+	public double randDouble(double min, double max)
 	{
 		return((double)Lehmer32() / (double)(0x7FFFFFFF)) * (max - min) + min;
 	}
@@ -134,9 +151,46 @@ public class Level
 		// procedurally generated
 		height = mode.getHeight();
 		width = mode.getWidth();
-		int sectorsX = width / 3;
-		int sectorsY = height / 16;
+		int sectorsX = width / 16;
+		int sectorsY = height / 3;
 		
-		g.fillRect(x, y, 8, 8);
+		Point screenSectors = new Point(0, 0);
+		
+		for (screenSectors.x = 0; screenSectors.x < sectorsX; screenSectors.x++)
+		{
+			for (screenSectors.y = 0; screenSectors.y < sectorsY; screenSectors.y++)
+			{
+				Level l = new Level(screenSectors.x, screenSectors.y);
+				if (screenSectors.y == 1) l.doesntExist();
+				if (l.exists)
+				{
+					g.setColor(Color.black);
+					g.fillRect(screenSectors.x * sectorsX, screenSectors.y * sectorsY, sectorsX, sectorsY);
+				}
+				else
+				{
+					g.setColor(Color.blue);
+					g.fillRect(screenSectors.x * sectorsX, screenSectors.y * sectorsY, sectorsX, sectorsY);
+				}
+				
+				
+				/*
+				// TEST X SECTORS
+				for (screenSectors.x = 0; screenSectors.x < sectorsX; screenSectors.x++)
+				{
+					g.setColor(colors[(int)screenSectors.x % 7]);
+					g.fillRect(screenSectors.x * sectorsX, screenSectors.y * sectorsY, sectorsX, sectorsY);
+				}
+				
+				// TEST Y SECTORS
+				
+				for (screenSectors.y = 0; screenSectors.y < sectorsY; screenSectors.y++)
+				{
+					g.setColor(colors[(int)screenSectors.y % 7]);
+					g.fillRect(screenSectors.x * sectorsX, screenSectors.y * sectorsY, sectorsX, sectorsY);
+				}
+				*/
+			}
+		}
 	}
 }
