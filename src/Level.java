@@ -51,7 +51,7 @@ public class Level
 	 * the maximum variation for the tunnel wall, so if the wall is 100 high and variation is set to 10, the
 	 * wall can be anything from 90 to 110 pixels, this applies to floor and ceiling
 	 */
-	int variation;
+	int variation = 100;
 	int deltaLength;
 	/**
 	 * average tunnel width value, when the variation is 0 on both the ceiling and the floor the tunnel will be
@@ -89,16 +89,17 @@ public class Level
 		// a floor with an empty, tunnel-like middle.
 		
 		Random rand = new Random((long)((x + y)));
-		exists = (rand.nextInt(40 - 1) + 1) != 1;
+		exists = (rand.nextInt(20 - 1) + 1) != 1;
 		if (!exists) return;
+		
+		deltaLength = rand.nextInt(variation - 1) + 1;
+		
 		/*
 		nLehmer = (x & 0xFFFF) << 16 | (y & 0xFFFF);
 		
 		exists = !(randInt(0, 40) == 1);
 		if (!exists) return;
 		*/
-		
-		//deltaLength = randInt(variation, variation);
 	}
 	
 	public void doesntExist()
@@ -164,8 +165,17 @@ public class Level
 				if (screenSectors.y == 1) l.doesntExist();
 				if (l.exists)
 				{
-					g.setColor(Color.black);
-					g.fillRect(screenSectors.x * sectorsX, screenSectors.y * sectorsY, sectorsX, sectorsY);
+					if (screenSectors.y < 1)
+					{
+						g.setColor(Color.black);
+						g.fillRect(screenSectors.x * sectorsX, (screenSectors.y * sectorsY) - l.deltaLength, sectorsX, sectorsY);
+					}
+					if (screenSectors.y > 1)
+					{
+						g.setColor(Color.black);
+						g.fillRect(screenSectors.x * sectorsX, (screenSectors.y * sectorsY) + l.deltaLength, sectorsX, sectorsY);
+					}
+					
 				}
 				else
 				{
