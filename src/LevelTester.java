@@ -32,7 +32,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		device = environment.getDefaultScreenDevice();
 		mode = device.getDisplayMode();
 		
-		offscreen_i = createImage((mode.getWidth() * 5), mode.getHeight());
+		offscreen_i = createImage((mode.getWidth() * 15), mode.getHeight());
 		
 		offscreen_g = offscreen_i.getGraphics();
 				
@@ -68,7 +68,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	}
 	
 	public void update(Graphics g) {
-		offscreen_g.clearRect(0, 0, (mode.getWidth() * 5), mode.getHeight());
+		offscreen_g.clearRect(0, 0, (mode.getWidth() * 15), mode.getHeight());
 		
 		paint(offscreen_g);
 		

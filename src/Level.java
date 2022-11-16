@@ -157,6 +157,7 @@ public class Level
 		
 		Point screenSectors = new Point(0, 0);
 		
+		
 		for (screenSectors.x = 0; screenSectors.x < sectorsX; screenSectors.x++)
 		{
 			for (screenSectors.y = 0; screenSectors.y < sectorsY; screenSectors.y++)
@@ -182,6 +183,7 @@ public class Level
 					g.setColor(Color.blue);
 					g.fillRect(screenSectors.x * sectorsX, screenSectors.y * sectorsY, sectorsX, sectorsY);
 				}
+				
 				
 				
 				/*
