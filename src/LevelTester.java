@@ -1,6 +1,7 @@
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class LevelTester extends Applet implements Runnable, KeyListener 
 {
@@ -22,7 +23,10 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	
 	boolean noWin = true;
 	
-	Level level = new Level(0, 0);
+	//Level level = new Level(0, 0);
+	//LevelRect level = new LevelRect(0, 0, 0, 0);
+	//ArrayList<LevelRect> level = new ArrayList<LevelRect>();
+	Ceiling ceil = new Ceiling(0, 0);
 	
 	Rect locator = new Rect(300, 300, 50, 50);
 	
@@ -31,6 +35,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		device = environment.getDefaultScreenDevice();
 		mode = device.getDisplayMode();
+		//level.add(new LevelRect(0, 0, 0, 0));
 		
 		offscreen_i = createImage((mode.getWidth() * 15), mode.getHeight());
 		
@@ -58,6 +63,8 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			if (up_pressed) Camera.moveUp(5);
 			if (dn_pressed) Camera.moveDown(5);
 			
+			//if (level.get(0).collision(locator)) noWin = true;
+			
 			repaint();
 			try 
 			{
@@ -76,11 +83,15 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	}
 	
 	public void paint(Graphics g) {
-		level.draw(g);
+		/*for (int i = 0; i < level.size(); i++) {
+			level.get(i).draw(g);
+		}
+		level.draw(g);*/
+		ceil.draw(g);
 		
 		locator.draw(g);
 		
-		g.setColor(Color.white);
+		g.setColor(Color.BLACK);
 		g.drawString("(" + locator.x + ", " + locator.y + ")", 10+Camera.x, 20+Camera.y);
 	}
 

@@ -18,7 +18,7 @@ import java.util.Random;
  * @author Daniel Weiner
  *
  */
-public class Level
+public class LevelFix
 {
 	private GraphicsDevice device;
 	private DisplayMode mode;
@@ -51,7 +51,7 @@ public class Level
 	 * the maximum variation for the tunnel wall, so if the wall is 100 high and variation is set to 10, the
 	 * wall can be anything from 90 to 110 pixels, this applies to floor and ceiling
 	 */
-	int variation = 200;
+	int variation = 100;
 	int deltaLength;
 	/**
 	 * average tunnel width value, when the variation is 0 on both the ceiling and the floor the tunnel will be
@@ -72,13 +72,6 @@ public class Level
 	 */
 	Color[] colors = {Color.blue, Color.green, Color.red, Color.yellow, Color.gray, Color.black, Color.white};
 	
-	public void init() {
-		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		device = environment.getDefaultScreenDevice();
-		mode = device.getDisplayMode();
-		height = mode.getHeight();
-		width = mode.getWidth();
-	}
 	/**
 	 * only using the least significant 16 bits of the x and y location so it limits the size of the level before
 	 * it starts looping, each axis only has 16 bit coordinate resolution. We are only worried about the x axis
@@ -87,9 +80,14 @@ public class Level
 	 * @param x: pixel location on the x axis.
 	 * @param y: pixel location on the y axis.
 	 */
-	public Level(int x, int y)
+	public LevelFix(int x, int y, int width)
 	{
-		this.init();
+		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		device = environment.getDefaultScreenDevice();
+		mode = device.getDisplayMode();
+		this.width = width;
+		this.x = x;
+		this.y = y;
 		// TODO: abort construction if y value is in the tunnel, this constructor needs to output a ceiling and 
 		// a floor with an empty, tunnel-like middle.
 		
@@ -98,11 +96,57 @@ public class Level
 		if (!exists) return;
 		
 		deltaLength = rand.nextInt(variation - 1) + 1;
+		
+		/*
+		nLehmer = (x & 0xFFFF) << 16 | (y & 0xFFFF);
+		
+		exists = !(randInt(0, 40) == 1);
+		if (!exists) return;
+		*/
 	}
 	
 	public void doesntExist()
 	{
 		exists = false;
+	}
+	
+	/**
+	 * uses the Lehmer random number generator I got from https://www.youtube.com/watch?v=ZZY9YE7rZJw 
+	 * this RNG is made to work with all 64 bits and I am returning the least significant 32 bits so it may
+	 * compromise the original functionality somewhat.
+	 * @return a genuinely random number based on the nLehmer state variable.
+	 */
+	private int Lehmer32()
+	{
+		nLehmer += 0xe120fc15;
+		long tmp;
+		tmp = (long)nLehmer * 0x4a39b70d;
+		long m1 = (tmp >> 32) ^ tmp;
+		tmp = m1 * 0x12fad5c9;
+		long m2 = (tmp >> 32) ^ tmp;
+		return (int)m2;
+	}
+	
+	/**
+	 * Utility function to return a random integer between min and max using the Lehmer32 random number generator
+	 * @param min: the low end of the range of numbers the random number can be between
+	 * @param max: the high end of the range of numbers the random number can be between
+	 * @return a random integer number between min and max
+	 */
+	public int randInt(int min, int max)
+	{
+		return (Lehmer32() % (max - min)) + min;
+	}
+	
+	/**
+	 * Utility function to return a random double between min and max using the Lehmer32 random number generator
+	 * @param min: the low end of the range of numbers the random number can be between
+	 * @param max: the high end of the range of numbers the random number can be between
+	 * @return a random double number between min and max
+	 */
+	public double randDouble(double min, double max)
+	{
+		return((double)Lehmer32() / (double)(0x7FFFFFFF)) * (max - min) + min;
 	}
 	
 	public void draw(Graphics g)

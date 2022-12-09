@@ -1,6 +1,7 @@
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class GameTest1 extends Applet implements Runnable, KeyListener 
 {
@@ -19,11 +20,15 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 	boolean dn_pressed = false;
 	boolean lt_pressed = false;
 	boolean rt_pressed = false;
+	boolean sp_pressed = false;
 	
 	boolean noWin = true;
 	
 	// the smaller the lander is the harder the game gets
-	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0);
+	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20);
+	
+	ArrayList<Ammo> ammo = new ArrayList<Ammo>();
+	ArrayList<Fuel> fuel = new ArrayList<Fuel>();
 	
 	Rect[] ground =
 	{
@@ -61,6 +66,7 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 	
 	double gravity = 0.1;
 	
+	final Font itemFont = new Font("Arial", Font.BOLD, 12);
 	final Font fuelFont = new Font("Arial", Font.BOLD, 20);
 	final Font font = new Font("Arial", Font.BOLD, 40);
 	
@@ -73,6 +79,12 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		device = environment.getDefaultScreenDevice();
 		mode = device.getDisplayMode();
+		
+		ammo.add(new Ammo(400, 400, 10, 10, 50, null));
+		ammo.add(new Ammo(450, 300, 10, 10, 50, null));
+		ammo.add(new Ammo(500, 200, 10, 10, 50, null));
+		fuel.add(new Fuel(300, 300, 10, 10, 10, null));
+		fuel.add(new Fuel(500, 400, 10, 10, 10, null));
 		
 		offscreen_i = createImage((mode.getWidth() * 10), mode.getHeight());
 		
@@ -107,15 +119,46 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 				if (lander.ax > -0.3) lander.moveLeftAccel(3 / lander.getCurrentWeight(lander.getWeight(), lander.getFuel()));
 				if (lander.fuel > 0) lander.burnFuel();
 			}
+			if (sp_pressed && lander.getAmmo() > 0) {
+				lander.shoot();
+			}
 			// function to move the camera to follow the lander
 			if (lander.vx != 0) Camera.move((int)lander.vx);
 			if (lander.x < 0) lander.x = 0;
 			
 			lander.moveBasedOnPhysics();
 			
+			for (int i = 0; i < ammo.size(); i++) {
+				if (lander.overlaps(ammo.get(i))) {
+					ammo.get(i).pickUp(lander);
+					ammo.remove(i);
+				}
+			}
+			
+			for (int i = 0; i < fuel.size(); i++) {
+				if (lander.overlaps(fuel.get(i))) {
+					fuel.get(i).pickUp(lander);
+					fuel.remove(i);
+				}
+			}
+			
+			for (int i = 0; i < lander.getProjectiles().size(); i++)
+			{
+				lander.getProjectiles().get(i).launchProjectile();
+			}
+			
+			/**
+			 * checks for collision with the ground, also checks for projectile collision with the ground and will
+			 * remove the projectiles if they're older than 1 second regardless to clear up space
+			 */
 			for (int i = 0; i < ground.length; i++) {
 				if (lander.overlaps(ground[i])) {
 					noWin = false;
+				}
+				for (int j = 0; j < lander.getProjectiles().size(); j++) {
+					if (lander.getProjectiles().get(j).overlaps(ground[i]) || lander.getProjectiles().get(j).getAgeInSeconds() >= 1) {
+						lander.removeProjectile(j);
+					}
 				}
 			}
 			
@@ -141,6 +184,18 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 	public void paint(Graphics g) {
 		
 		lander.draw(g);
+		
+		g.setFont(itemFont);
+		for (int i = 0; i < ammo.size(); i++) {
+			ammo.get(i).draw(g);
+		}
+		for (int i = 0; i < fuel.size(); i++) {
+			fuel.get(i).draw(g);
+		}
+		
+		for (int i = 0; i < lander.getProjectiles().size(); i++) {
+			lander.getProjectiles().get(i).draw(g);
+		}
 		
 		for (int i = 0; i < ground.length; i++) {
 			g.setColor(Color.black);
@@ -178,6 +233,7 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 		if (e.getKeyCode() == KeyEvent.VK_DOWN)  dn_pressed = true;
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)  lt_pressed = true;
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) rt_pressed = true;
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) sp_pressed = true;
 	}
 
 	@Override
@@ -186,6 +242,7 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 		if(e.getKeyCode() == KeyEvent.VK_DOWN)   dn_pressed = false;
 		if(e.getKeyCode() == KeyEvent.VK_LEFT)   lt_pressed = false;
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT)  rt_pressed = false;	
+		if(e.getKeyCode() == KeyEvent.VK_SPACE)  sp_pressed = false;
 	}
 
 	@Override
