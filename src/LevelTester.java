@@ -30,7 +30,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	ArrayList<StationaryEnemy> enemy = new ArrayList<StationaryEnemy>();
 	//ArrayList<UpandDownEnemy> upandDn = new ArrayList<UpandDownEnemy>();
 	ArrayList<KamikazeEnemy> kamikaze = new ArrayList<KamikazeEnemy>();
-	Boss boss = new Boss(2000, 250, 200, 200, null, 20);
+	Boss boss = new Boss(2000 * ceil.difficulty, 250, 200, 200, null, 20 * ceil.difficulty, ceil.difficulty);
 	
 	Rect locator = new Rect(300, 300, 50, 50);
 	// slows down update speeds

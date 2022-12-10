@@ -13,14 +13,16 @@ public class Boss extends Enemy {
 	
 	ArrayList<Projectiles> projectiles = new ArrayList<Projectiles>();
 	ArrayList<KamikazeEnemy> enemies = new ArrayList<KamikazeEnemy>();
+	int difficultyTimerScalar;
 
-	public Boss(double x, double y, int w, int h, LunarLander target, int health) {
+	public Boss(double x, double y, int w, int h, LunarLander target, int health, int difficulty) {
 		super(x, y, w, h, target, health);
+		difficultyTimerScalar = difficulty;
 	}
 
 	@Override
 	public void update() {
-		if (this.getAgeInSeconds() > 10) {
+		if (this.getAgeInSeconds() > (10 * difficultyTimerScalar)) {
 			launchKamikaze();
 			shoot();
 		}

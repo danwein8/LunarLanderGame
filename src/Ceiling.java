@@ -23,7 +23,7 @@ public class Ceiling {
 	/**
 	 * a scalar value used in the procedural generation
 	 */
-	int difficulty = 1;
+	int difficulty = 3;
 	/**
 	 * length and width of the level, probably wont need these values here, this would be needed where I instantiate
 	 * the Level object inside of a loop that loops over all the sectors of the level
