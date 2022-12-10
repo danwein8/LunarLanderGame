@@ -20,19 +20,12 @@ public class Boss extends Enemy {
 
 	@Override
 	public void update() {
-		/*
-		if (this.getAgeInSeconds() % 5 >= 0 && this.getAgeInSeconds() % 5 <= 0.1) {
+		if (this.getAgeInSeconds() > 10) {
 			launchKamikaze();
-		}
-		if (this.getAgeInSeconds() % 1 >= 0 && this.getAgeInSeconds() % 1 <= 0.000001) {
 			shoot();
-		}*/
-		
-		launchKamikaze();
-		shoot();
-		
+		}
 	}
-	
+
 	public void shoot() {
 		Random rand = new Random();
 		projectiles.add(new Projectiles(this.x + (this.w / 2), rand.nextInt(600) + 200, 5, 5));
