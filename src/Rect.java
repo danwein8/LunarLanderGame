@@ -82,7 +82,6 @@ public class Rect
 	
 	public void draw(Graphics g)
 	{
-		g.setColor(Color.white);
 		g.fillRect((int)x,  (int)y,  w,  h);
 	}
 	

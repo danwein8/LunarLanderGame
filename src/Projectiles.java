@@ -13,6 +13,10 @@ public class Projectiles extends Rect {
 		moveRight(50);
 	}
 	
+	public void launchProjectileL() {
+		moveLeft(30);
+	}
+	
 	public int getAgeInSeconds() {
 		long nowMillis = System.currentTimeMillis();
 		return (int)((nowMillis - this.createdMillis) / 1000);

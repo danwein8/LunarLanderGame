@@ -1,15 +1,15 @@
-import java.awt.DisplayMode;
-import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Random;
+import java.awt.*;
+import java.util.*;
 
 public class Ceiling {
 
+	/**
+	 * all of the rectangles that make up the collidable objects in the level
+	 */
 	ArrayList<Rect> floor = new ArrayList<Rect>();
 	ArrayList<Rect> ceiling = new ArrayList<Rect>();
+	Rect endPlatform;
+	
 	private GraphicsDevice device;
 	private DisplayMode mode;
 	/**
@@ -32,6 +32,17 @@ public class Ceiling {
 	int width;
 	int sectorsX;
 	int sectorsY;
+	
+	/**
+	 * how far out the ending platform is placed
+	 */
+	int endDist = 2500;
+	/**
+	 * the Y value, width, and height for the end platform, its always the same
+	 */
+	final int endPlatY = 450;
+	final int endPlatW = 30;
+	final int endPlatH = 10;
 
 	/**
 	 * the width of the ceiling and floor rectangles
@@ -86,6 +97,7 @@ public class Ceiling {
 				floor.add(new Rect(screenSectors.x * sectorsX, (sectorsY-b)+(screenSectors.y * sectorsY), w * difficulty, b));
 			}
 		}
+		endPlatform = new Rect(endDist * difficulty, endPlatY, endPlatW, endPlatH);
 	}
 
 	public void draw(Graphics g) {
@@ -93,6 +105,7 @@ public class Ceiling {
 			g.drawRect((int)ceiling.get(i).x, (int)ceiling.get(i).y, ceiling.get(i).w, ceiling.get(i).h);
 			g.drawRect((int)floor.get(i).x, (int)floor.get(i).y, floor.get(i).w, floor.get(i).h);
 		}
+		g.drawRect(endDist * difficulty, endPlatY, endPlatW, endPlatH);
 	}
 
 }

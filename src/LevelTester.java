@@ -27,8 +27,19 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	//LevelRect level = new LevelRect(0, 0, 0, 0);
 	//ArrayList<LevelRect> level = new ArrayList<LevelRect>();
 	Ceiling ceil = new Ceiling(0, 0);
+	ArrayList<StationaryEnemy> enemy = new ArrayList<StationaryEnemy>();
+	//ArrayList<UpandDownEnemy> upandDn = new ArrayList<UpandDownEnemy>();
+	ArrayList<KamikazeEnemy> kamikaze = new ArrayList<KamikazeEnemy>();
+	Boss boss = new Boss(2000, 250, 200, 200, null, 20);
 	
 	Rect locator = new Rect(300, 300, 50, 50);
+	// slows down update speeds
+	int counter = 0;
+	int target1 = 15;
+	int target2 = 30;
+	// slows down boss attack speed
+	int bossCounter = 0;
+	int bossTarget = 60;
 	
 	public void init()
 	{
@@ -36,6 +47,12 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		device = environment.getDefaultScreenDevice();
 		mode = device.getDisplayMode();
 		//level.add(new LevelRect(0, 0, 0, 0));
+		enemy.add(new StationaryEnemy(600, 400, 20, 20, null, 1));
+		enemy.add(new StationaryEnemy(1700, 400, 20, 20, null, 1));
+		//upandDn.add(new UpandDownEnemy(500, 400, 20, 20, null, 1, -30));
+		//upandDn.add(new UpandDownEnemy(1500, 400, 20, 20, null, 1));
+		kamikaze.add(new KamikazeEnemy(1000, 200, 20, 40, null, 1));
+		kamikaze.add(new KamikazeEnemy(1000, 500, 20, 40, null, 1));
 		
 		offscreen_i = createImage((mode.getWidth() * 15), mode.getHeight());
 		
@@ -57,14 +74,54 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			if (lt_pressed) locator.moveLeft(5);
 			if (up_pressed) locator.moveUp(5);
 			if (dn_pressed) locator.moveDown(5);
-			
+
 			if (rt_pressed) Camera.moveRight(5);
 			if (lt_pressed) Camera.moveLeft(5);
 			if (up_pressed) Camera.moveUp(5);
 			if (dn_pressed) Camera.moveDown(5);
+
+			// enemies
+			if (counter == target1) {
+				for (int i = 0; i < enemy.size(); i++) {
+					enemy.get(i).update();
+				}
+				for (int i = 0; i < kamikaze.size(); i++) {
+					kamikaze.get(i).update();
+				}
+				for (int i = 0; i < boss.enemies.size(); i++) {
+					boss.enemies.get(i).update();
+				}
+				for (int i = 0; i < boss.projectiles.size(); i++) {
+					boss.projectiles.get(i).launchProjectileL();
+				}
+			}  
+			if (counter == target2) {
+				for (int i = 0; i < enemy.size(); i++) {
+					enemy.get(i).update2();
+				}
+				for (int i = 0; i < kamikaze.size(); i++) {
+					kamikaze.get(i).update();
+				}
+				for (int i = 0; i < boss.enemies.size(); i++) {
+					boss.enemies.get(i).update();
+				}
+				for (int i = 0; i < boss.projectiles.size(); i++) {
+					boss.projectiles.get(i).launchProjectileL();
+				}
+				counter = 0;
+			}
+			counter++;
 			
+			if (bossCounter == bossTarget) {
+				boss.update();
+				bossCounter = 0;
+			}
+			bossCounter++;
+			
+
+
 			//if (level.get(0).collision(locator)) noWin = true;
-			
+
 			repaint();
 			try 
 			{
@@ -83,15 +140,30 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	}
 	
 	public void paint(Graphics g) {
-		/*for (int i = 0; i < level.size(); i++) {
-			level.get(i).draw(g);
-		}
-		level.draw(g);*/
+
+		g.setColor(Color.BLACK);
 		ceil.draw(g);
 		
 		locator.draw(g);
 		
-		g.setColor(Color.BLACK);
+		// stationary enemies
+		for (int i =  0; i < enemy.size(); i++) {
+			enemy.get(i).draw(g);
+		}
+		
+		//kamikaze enemies
+		for (int i = 0; i < kamikaze.size(); i++) {
+			kamikaze.get(i).draw(g);
+		}
+		
+		boss.draw(g);
+		for (int i = 0; i < boss.projectiles.size(); i++) {
+			boss.projectiles.get(i).draw(g);
+		}
+		for (int i = 0; i < boss.enemies.size(); i++) {
+			boss.enemies.get(i).draw(g);
+		}
+		
 		g.drawString("(" + locator.x + ", " + locator.y + ")", 10+Camera.x, 20+Camera.y);
 	}
 
