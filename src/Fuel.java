@@ -18,7 +18,7 @@ public class Fuel extends Item {
 
 	@Override
 	public void pickUp(LunarLander lander) {
-		lander.setFuel(getStrength());
+		lander.addFuel(getStrength());
 		
 	}
 	

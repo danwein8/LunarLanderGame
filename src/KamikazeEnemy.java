@@ -17,6 +17,10 @@ public class KamikazeEnemy extends Enemy {
 		moveLeft(10);
 	}
 	
+	public void update2() {
+		
+	}
+	
 	public void draw(Graphics g) {
 		g.drawRect((int)x, (int)y, w, h);
 	}

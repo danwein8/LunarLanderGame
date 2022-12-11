@@ -25,7 +25,7 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 	boolean noWin = true;
 	
 	// the smaller the lander is the harder the game gets
-	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20);
+	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20, 2);
 	
 	ArrayList<Ammo> ammo = new ArrayList<Ammo>();
 	ArrayList<Fuel> fuel = new ArrayList<Fuel>();
@@ -163,6 +163,7 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 			}
 			
 			if (lander.overlaps(landingPlatform)) noWin = false;
+			
 			
 			repaint();
 			try 

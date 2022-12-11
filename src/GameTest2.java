@@ -5,7 +5,7 @@ public class GameTest2 extends GameBase
 
 	boolean noWin = true;
 
-	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20);
+	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20, 2);
 
 	Rect landingPlatform = new Rect(1400, 400, 40, 20);
 

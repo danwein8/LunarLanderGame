@@ -27,6 +27,10 @@ public class Boss extends Enemy {
 			shoot();
 		}
 	}
+	
+	public void update2() {
+		
+	}
 
 	public void shoot() {
 		Random rand = new Random();

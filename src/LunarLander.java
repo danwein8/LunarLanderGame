@@ -8,32 +8,42 @@ public class LunarLander extends Rect
 	double ax;
 	double ay;
 	
+	public static final float SPEED = .3f;
+	public static final float GRAVITY = .002f;
+	
 	// a sprite for the lander
 	Image landerSprite;
 	
 	// flame animation for under the lander when it accelerates / lifts
-	Animation[] flame;
+	AnimationBk flame;
 	
 	// dust cloud animation for collision with anything other than the landing pad
-	Animation[] crash;
+	AnimationBk crash;
 	
 	// weight that gets lighter making the lander more responsive as the fuel runs out
 	double weight;
 	// fuel, runs out every time you accelerate
 	double fuel;
 	int bullets;
+	int health;
 	
 	ArrayList<Projectiles> projectiles = new ArrayList<Projectiles>();
 	
 	
-	public LunarLander(double x, double y, int w, int h, double weight, double fuel, int bullets) {
+	public LunarLander(double x, double y, int w, int h, double weight, double fuel, int bullets, int health) {
 		super(x, y, w, h);
 		
 		this.weight = weight;
 		this.fuel = fuel;
 		this.bullets = bullets;
+		this.health = health;
 		
 		// make new flame and crash animations when you get the sprite 
+	}
+	
+	public void update(long elapsedTime) {
+		gravityAccel(GRAVITY);
+		moveBasedOnPhysics();
 	}
 	
 	public double getWeight() {
@@ -50,7 +60,7 @@ public class LunarLander extends Rect
 		return this.fuel;
 	}
 	
-	public void setFuel(double fuelIn) {
+	public void addFuel(double fuelIn) {
 		fuel += fuelIn;
 	}
 	
@@ -58,8 +68,16 @@ public class LunarLander extends Rect
 		return this.bullets;
 	}
 	
-	public void setAmmo(int ammoIn) {
+	public void addAmmo(int ammoIn) {
 		bullets += ammoIn;
+	}
+	
+	public int getHealth() {
+		return health;
+	}
+	
+	public void addHealth(int healthIn) {
+		health += healthIn;
 	}
 	
 	public void shoot()
@@ -146,8 +164,21 @@ public class LunarLander extends Rect
 		ax *= dx;
 	}
 	
+	public void setFlameAnim(AnimationBk animIn) {
+		this.flame = animIn;
+	}
+	
+	public void setCrashAnim(AnimationBk animIn) {
+		this.crash = animIn;
+	}
+	
+	public void setSprite(Image spriteIn) {
+		landerSprite = spriteIn;
+	}
+	
 	public void draw(Graphics g) {
-		g.drawRect((int)(x), (int)(y), w, h);
+		//g.drawRect((int)(x), (int)(y), w, h);
+		g.drawImage(landerSprite, (int)x, (int)y, null);
 	}
 	
 }

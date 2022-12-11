@@ -16,7 +16,7 @@ public class Ammo extends Item {
 
 	@Override
 	public void pickUp(LunarLander lander) {
-		lander.setAmmo(getStrength());
+		lander.addAmmo(getStrength());
 	}
 	
 	public void draw(Graphics g) {

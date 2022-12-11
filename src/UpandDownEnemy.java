@@ -19,6 +19,10 @@ public class UpandDownEnemy extends Enemy {
 		moveBy(0, movement);
 	}
 	
+	public void update2() {
+		
+	}
+	
 	public void negateMovement() {
 		movement *= -1;
 	}

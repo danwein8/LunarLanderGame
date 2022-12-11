@@ -36,6 +36,7 @@ public abstract class Enemy extends Rect {
 	}
 	
 	public abstract void update();
+	public abstract void update2();
 	
 	public int getHealth() {
 		return health;
