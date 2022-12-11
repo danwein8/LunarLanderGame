@@ -107,7 +107,6 @@ public class NewGameTest extends GameCore {
     
     public void createSprite() {
     	// lander sprite
-    	lander.setSprite(loadImage("Lander1.png"));
     	
     	// flame / ignition animation sprites
     	Image flame1 = loadImage("ignition1.png");
@@ -140,7 +139,6 @@ public class NewGameTest extends GameCore {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.drawImage(lander.landerSprite, (int)lander.x, (int)lander.y, null);
 		g.drawRect((int)lander.x, (int)lander.y, lander.w, lander.h);
 	}
 }

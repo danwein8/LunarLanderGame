@@ -80,11 +80,11 @@ public class GameTest1 extends Applet implements Runnable, KeyListener
 		device = environment.getDefaultScreenDevice();
 		mode = device.getDisplayMode();
 		
-		ammo.add(new Ammo(400, 400, 10, 10, 50, null));
-		ammo.add(new Ammo(450, 300, 10, 10, 50, null));
-		ammo.add(new Ammo(500, 200, 10, 10, 50, null));
-		fuel.add(new Fuel(300, 300, 10, 10, 10, null));
-		fuel.add(new Fuel(500, 400, 10, 10, 10, null));
+		ammo.add(new Ammo(400, 400, 10, 10, 50));
+		ammo.add(new Ammo(450, 300, 10, 10, 50));
+		ammo.add(new Ammo(500, 200, 10, 10, 50));
+		fuel.add(new Fuel(300, 300, 10, 10, 10));
+		fuel.add(new Fuel(500, 400, 10, 10, 10));
 		
 		offscreen_i = createImage((mode.getWidth() * 10), mode.getHeight());
 		

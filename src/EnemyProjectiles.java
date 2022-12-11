@@ -1,12 +1,12 @@
-import java.awt.*;
+import java.awt.Graphics;
 
-public class Projectiles extends Rect {
+public class EnemyProjectiles extends Rect {
 	
-	private final long createdMillis;
+private final long createdMillis;
 	
-	static AnimationBk projectileImage;
+	static AnimationBk enemyProjectileImage;
 
-	public Projectiles(double x, double y, int w, int h) {
+	public EnemyProjectiles(double x, double y, int w, int h) {
 		super(x, y, w, h);
 		createdMillis = System.currentTimeMillis();
 	}
@@ -26,7 +26,7 @@ public class Projectiles extends Rect {
 	
 	public void draw(Graphics g) {
 		g.drawRect((int)(x), (int)(y), w, h);
-		g.drawImage(projectileImage.getImage(), (int)x, (int)y, null);
+		g.drawImage(enemyProjectileImage.getImage(), (int)x, (int)y, null);
 	}
 
 }

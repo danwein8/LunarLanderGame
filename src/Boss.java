@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class Boss extends Enemy {
 	
-	ArrayList<Projectiles> projectiles = new ArrayList<Projectiles>();
+	ArrayList<EnemyProjectiles> projectiles = new ArrayList<EnemyProjectiles>();
 	ArrayList<KamikazeEnemy> enemies = new ArrayList<KamikazeEnemy>();
 	int difficultyTimerScalar;
 
@@ -34,10 +34,10 @@ public class Boss extends Enemy {
 
 	public void shoot() {
 		Random rand = new Random();
-		projectiles.add(new Projectiles(this.x + (this.w / 2), rand.nextInt(600) + 200, 5, 5));
+		projectiles.add(new EnemyProjectiles(this.x + (this.w / 2), rand.nextInt(600) + 200, 5, 5));
 	}
 	
-	public ArrayList<Projectiles> getProjectiles() {
+	public ArrayList<EnemyProjectiles> getProjectiles() {
 		return projectiles;
 	}
 	
@@ -52,6 +52,7 @@ public class Boss extends Enemy {
 	
 	public void draw(Graphics g) {
 		g.drawRect((int)x, (int)y, w, h);
+		g.drawImage(enemySprite.getImage(), (int)x, (int)y, null);
 	}
 	
 }

@@ -11,9 +11,11 @@ import java.awt.Image;
  *
  */
 public class Fuel extends Item {
+	
+	static AnimationBk fuelSprite;
 
-	public Fuel(double x, double y, int w, int h, int strength, Image sprite) {
-		super(x, y, w, h, strength, sprite);
+	public Fuel(double x, double y, int w, int h, int strength) {
+		super(x, y, w, h, strength);
 	}
 
 	@Override
@@ -25,5 +27,6 @@ public class Fuel extends Item {
 	public void draw(Graphics g) {
 		g.drawRect((int)(x), (int)(y), w, h);
 		g.drawString("F", (int)(x + 1), (int)(y + h));
+		g.drawImage(fuelSprite.getImage(), (int)x, (int)y, null);
 	}	
 }

@@ -8,13 +8,13 @@ import java.awt.*;
 public abstract class Enemy extends Rect {
 
 	// a sprite for the lander
-	Image enemySprite;
+	AnimationBk enemySprite;
 
 	// flame animation for under the lander when it accelerates / lifts
-	Animation[] flame;
+	AnimationBk flame;
 
 	// dust cloud animation for collision with anything other than the landing pad
-	Animation[] crash;
+	AnimationBk crash;
 	
 	private final long createdMillis;
 	
@@ -49,6 +49,7 @@ public abstract class Enemy extends Rect {
 	
 	public void draw(Graphics g) {
 		g.drawRect((int)x, (int)y, w, h);
+		g.drawImage(enemySprite.getImage(), (int)x, (int)y, null);
 	}
 
 }

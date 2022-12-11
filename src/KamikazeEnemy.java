@@ -7,6 +7,8 @@ import java.awt.Graphics;
  *
  */
 public class KamikazeEnemy extends Enemy {
+	
+	static AnimationBk kamikazeSprite;
 
 	public KamikazeEnemy(double x, double y, int w, int h, LunarLander target, int health) {
 		super(x, y, w, h, target, health);
@@ -23,5 +25,6 @@ public class KamikazeEnemy extends Enemy {
 	
 	public void draw(Graphics g) {
 		g.drawRect((int)x, (int)y, w, h);
+		g.drawImage(kamikazeSprite.getImage(), (int)x, (int)y, null);
 	}
 }

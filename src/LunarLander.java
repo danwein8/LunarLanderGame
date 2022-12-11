@@ -12,7 +12,7 @@ public class LunarLander extends Rect
 	public static final float GRAVITY = .002f;
 	
 	// a sprite for the lander
-	Image landerSprite;
+	AnimationBk landerImage;
 	
 	// flame animation for under the lander when it accelerates / lifts
 	AnimationBk flame;
@@ -83,6 +83,7 @@ public class LunarLander extends Rect
 	public void shoot()
 	{
 		projectiles.add(new Projectiles(this.x + (this.w / 2), this.y, 5, 5));
+		
 		bullets--;
 	}
 	
@@ -131,11 +132,13 @@ public class LunarLander extends Rect
 	}
 	
 	public void moveLeft(double dx) {
-		vx = -dx;
+		//vx = -dx;
+		x -= dx;
 	}
 	
 	public void moveRight(double dx) {
-		vx = dx;
+		//vx = dx;
+		x += dx;
 	}
 	
 	/** 
@@ -172,13 +175,10 @@ public class LunarLander extends Rect
 		this.crash = animIn;
 	}
 	
-	public void setSprite(Image spriteIn) {
-		landerSprite = spriteIn;
-	}
-	
 	public void draw(Graphics g) {
 		//g.drawRect((int)(x), (int)(y), w, h);
-		g.drawImage(landerSprite, (int)x, (int)y, null);
+		g.drawImage(landerImage.getImage(), (int)x, (int)y, null);
+		g.drawImage(flame.getImage(), (int)x + 3, (int)y + h + 6, null);
 	}
 	
 }

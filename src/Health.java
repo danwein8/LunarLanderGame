@@ -3,8 +3,10 @@ import java.awt.Image;
 
 public class Health extends Item {
 
-	public Health(double x, double y, int w, int h, int strength, Image sprite) {
-		super(x, y, w, h, strength, sprite);
+	static AnimationBk healthSprite;
+	
+	public Health(double x, double y, int w, int h, int strength) {
+		super(x, y, w, h, strength);
 	}
 
 	@Override
@@ -15,5 +17,6 @@ public class Health extends Item {
 	public void draw(Graphics g) {
 		g.drawRect((int)(x), (int)(y), w, h);
 		g.drawString("+", (int)(x + 1), (int)(y + h));
+		g.drawImage(healthSprite.getImage(), (int)x, (int)y, null);
 	}	
 }

@@ -9,9 +9,11 @@ import java.util.*;
  *
  */
 public class Ammo extends Item {
+	
+	static AnimationBk ammoSprite;
 
-	public Ammo(double x, double y, int w, int h, int strength, Image sprite) {
-		super(x, y, w, h, strength, sprite);
+	public Ammo(double x, double y, int w, int h, int strength) {
+		super(x, y, w, h, strength);
 	}
 
 	@Override
@@ -22,5 +24,6 @@ public class Ammo extends Item {
 	public void draw(Graphics g) {
 		g.drawRect((int)(x), (int)(y), w, h);
 		g.drawString("A", (int)(x + 1), (int)(y + h));
+		g.drawImage(ammoSprite.getImage(), (int)x, (int)y, null);
 	}	
 }

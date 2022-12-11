@@ -15,20 +15,15 @@ public abstract class Item extends Rect {
 	/**
 	 * the sprite used for this item
 	 */
-	Image sprite;
+	AnimationBk sprite;
 	
-	public Item(double x, double y, int w, int h, int strength, Image sprite) {
+	public Item(double x, double y, int w, int h, int strength) {
 		super(x, y, w, h);
 		this.strength = strength;
-		this.sprite = sprite;
 	}
 	
 	public int getStrength() {
 		return this.strength;
-	}
-	
-	public Image getSprite() {
-		return this.sprite;
 	}
 	
 	/**
@@ -38,6 +33,7 @@ public abstract class Item extends Rect {
 	
 	public void draw(Graphics g) {
 		g.drawRect((int)(x), (int)(y), w, h);
+		g.drawImage(sprite.getImage(), (int)x, (int)y, null);
 	}
 	
 }

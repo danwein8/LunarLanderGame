@@ -6,6 +6,8 @@ import java.awt.*;
  *
  */
 public class StationaryEnemy extends Enemy {
+	
+	static AnimationBk stationarySprite;
 
 	public StationaryEnemy(double x, double y, int w, int h, LunarLander target, int health) {
 		super(x, y, w, h, target, health);
@@ -22,5 +24,6 @@ public class StationaryEnemy extends Enemy {
 	
 	public void draw(Graphics g) {
 		g.drawRect((int)x, (int)y, w, h);
+		g.drawImage(stationarySprite.getImage(), (int)x, (int)y, null);
 	}
 }

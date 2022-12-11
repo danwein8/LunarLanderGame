@@ -23,7 +23,10 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	GameAction fire;
 	InputManager inputManager = new InputManager(this);
 	
-	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20, 2);
+	double gravity = 0.1;
+	
+	//LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20, 2);
+	LunarLander lander;
 	
 	ArrayList<Ammo> ammo = new ArrayList<Ammo>();
 	ArrayList<Fuel> fuel = new ArrayList<Fuel>();
@@ -32,13 +35,10 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	boolean noWin = true;
 	
 	Ceiling ceil = new Ceiling(0, 0);
-	//ArrayList<StationaryEnemy> enemy = new ArrayList<StationaryEnemy>();
-	//ArrayList<UpandDownEnemy> upandDn = new ArrayList<UpandDownEnemy>();
-	//ArrayList<KamikazeEnemy> kamikaze = new ArrayList<KamikazeEnemy>();
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	Boss boss = new Boss(2000 * ceil.difficulty, 250, 200, 300, null, 20 * ceil.difficulty, ceil.difficulty);
+	ArrayList<Boss> bosses = new ArrayList<Boss>();
+	Boss boss = new Boss(2000 * ceil.difficulty, 250, 20, 300, null, 20 * ceil.difficulty, ceil.difficulty);
 	
-	Rect locator = new Rect(300, 300, 50, 50);
 	// slows down update speeds
 	int counter = 0;
 	int target1 = 15;
@@ -54,6 +54,22 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	String lose = "YOU CRASHED AND DIED";
 	String win = "YOU SUCCESSFULLY LANDED AND EVERYONE LIVED"; 
 	
+	Image[] landerArr = new Image[16];
+	Image[] ignitionArr = new Image[3];
+	Image[] projectileArr = new Image[4];
+	Image[] enemyProjectileArr = new Image[4];
+	Image[] ammoPickupArr = new Image[4];
+	Image[] fuelPickupArr = new Image[8];
+	Image[] healthPickupArr = new Image[6];
+	Image[] explosionArr = new Image[4];
+	Image[] bigBossArr = new Image[8];
+	Image[] smallBossArr = new Image[3];
+	Image[] stationaryEnemyArr = new Image[3];
+	Image[] kamikazeEnemyArr = new Image[3];
+	
+	AnimationBk projectileAnim = new AnimationBk();
+	AnimationBk enemyProjectileAnim = new AnimationBk();
+	
 	public void init()
 	{
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -61,23 +77,25 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		mode = device.getDisplayMode();
 		enemies.add(new StationaryEnemy(600, 400, 20, 20, null, 1));
 		enemies.add(new StationaryEnemy(1700, 400, 20, 20, null, 1));
-		//upandDn.add(new UpandDownEnemy(500, 400, 20, 20, null, 1, -30));
-		//upandDn.add(new UpandDownEnemy(1500, 400, 20, 20, null, 1));
 		enemies.add(new KamikazeEnemy(1000, 200, 20, 40, null, 1));
 		enemies.add(new KamikazeEnemy(1000, 500, 20, 40, null, 1));
+		bosses.add(boss);
 		//enemies.add(new Boss(2000 * ceil.difficulty, 250, 200, 300, null, 20 * ceil.difficulty, ceil.difficulty));
-		ammo.add(new Ammo(400, 400, 10, 10, 50, null));
-		ammo.add(new Ammo(450, 300, 10, 10, 50, null));
-		ammo.add(new Ammo(500, 200, 10, 10, 50, null));
-		fuel.add(new Fuel(300, 300, 10, 10, 10, null));
-		fuel.add(new Fuel(500, 400, 10, 10, 10, null));
-		health.add(new Health(600, 300, 10, 10, 1, null));
+		ammo.add(new Ammo(400, 400, 10, 10, 50));
+		ammo.add(new Ammo(450, 300, 10, 10, 50));
+		ammo.add(new Ammo(500, 200, 10, 10, 50));
+		fuel.add(new Fuel(300, 300, 10, 10, 10));
+		fuel.add(new Fuel(500, 400, 10, 10, 10));
+		health.add(new Health(600, 300, 10, 10, 1));
+		
+		lander = new LunarLander(50, 200, 20, 20, 30.0, 100.0, 20, 2);
+		createSprites();
 		
 		moveUp = new GameAction("moveUp");
 		moveLeft = new GameAction("moveLeft");
     	moveRight = new GameAction("moveRight");
     	moveDown = new GameAction("moveDown");
-    	fire = new GameAction("fire");
+    	fire = new GameAction("fire", GameAction.DETECT_INITAL_PRESS_ONLY);
     	
     	// ARROW KEYS
     	inputManager.mapToKey(moveUp, KeyEvent.VK_UP);
@@ -106,19 +124,42 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 
 	@Override
 	public void run() {
+		//lander.setAcceleration(0, gravity);
+		long startTime = System.currentTimeMillis();
+		long currTime = startTime;
 		while (noWin) {
+
+			long elapsedTime = System.currentTimeMillis() - currTime;
+			currTime += elapsedTime;
+			lander.landerImage.update(elapsedTime);
+			lander.flame.update(elapsedTime);
+			boss.enemySprite.update(elapsedTime);
+			//for (int i = 0; i < lander.projectiles.size(); i++) lander.projectiles.get(i).projectileImage.update(elapsedTime);
+			//for (int i = 0; i < boss.enemies.size(); i++) boss.enemies.get(i).enemySprite.update(elapsedTime);
+			//for (int i = 0; i < boss.projectiles.size(); i++) boss.projectiles.get(i).enemyProjectileImage.update(elapsedTime);
+			//for (int i = 0; i < enemies.size(); i++) enemies.get(i).enemySprite.update(elapsedTime);
+			//for (int i = 0; i < ammo.size(); i++) ammo.get(i).sprite.update(elapsedTime);
+			//for (int i = 0; i < fuel.size(); i++) fuel.get(i).sprite.update(elapsedTime);
+			//for (int i = 0; i < health.size(); i++) health.get(i).sprite.update(elapsedTime);
+			
+			
+
 			/**
 			 * INPUT
 			 */
-			if (moveRight.isPressed()) locator.moveRight(5);
-			if (moveLeft.isPressed()) locator.moveLeft(5);
-			if (moveUp.isPressed()) locator.moveUp(5);
-			if (moveDown.isPressed()) locator.moveDown(5);
+			 if (moveRight.isPressed()) lander.moveRight(5);
+			 if (moveLeft.isPressed()) lander.moveLeft(5);
+			 if (moveUp.isPressed()) lander.moveUp(5);
+			 if (moveDown.isPressed()) lander.moveDown(5);
+			 if (fire.isPressed()) lander.shoot();
 
-			if (moveRight.isPressed()) Camera.moveRight(5);
-			if (moveLeft.isPressed()) Camera.moveLeft(5);
-			//if (moveUp.isPressed()) Camera.moveUp(5);
-			//if (moveDown.isPressed()) Camera.moveDown(5);
+			 if (moveRight.isPressed()) Camera.moveRight(5);
+			 if (moveLeft.isPressed()) Camera.moveLeft(5);
+			 //if (moveUp.isPressed()) Camera.moveUp(5);
+			 //if (moveDown.isPressed()) Camera.moveDown(5);
+			 
+			 for (int i = 0; i < lander.getProjectiles().size(); i++)
+				 lander.getProjectiles().get(i).launchProjectile();
 
 			/**
 			 * ENEMY UPDATE
@@ -140,7 +181,8 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			counter++;
 			
 			if (bossCounter == bossTarget) {
-				boss.update();
+				for (int i = 0; i < bosses.size(); i++)
+					bosses.get(i).update();
 				bossCounter = 0;
 			}
 			bossCounter++;
@@ -149,21 +191,21 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			 * ENEMY AND PROJECTILE COLLISION
 			 */
 			for (int i = 0; i < enemies.size(); i++) {
-				if (locator.overlaps(enemies.get(i))) {
+				if (lander.overlaps(enemies.get(i))) {
 					lander.health--;
 					enemies.remove(i);
 					if (lander.health == 0) noWin = false;
 				}
 			}
 			for (int i = 0; i < boss.projectiles.size(); i++) {
-				if (locator.overlaps(boss.projectiles.get(i))) {
+				if (lander.overlaps(boss.projectiles.get(i))) {
 					lander.health--;
 					boss.projectiles.remove(i);
 					if (lander.health == 0) noWin = false;
 				}
 			}
 			for (int i = 0; i < boss.enemies.size(); i++) {
-				if (locator.overlaps(boss.enemies.get(i))) {
+				if (lander.overlaps(boss.enemies.get(i))) {
 					lander.health--;
 					boss.enemies.remove(i);
 					if (lander.health == 0) noWin = false;
@@ -175,16 +217,16 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			 * WALL AND PLATFORM COLLISION
 			 */
 			for (int i = 0; i < ceil.ceiling.size(); i++) {
-				if (locator.overlaps(ceil.ceiling.get(i))) {
+				if (lander.overlaps(ceil.ceiling.get(i))) {
 					noWin = false;
 				}
 			}
 			for (int i = 0; i < ceil.floor.size(); i++) {
-				if (locator.overlaps(ceil.floor.get(i))) {
+				if (lander.overlaps(ceil.floor.get(i))) {
 					noWin = false;
 				}
 			}
-			if (locator.overlaps(ceil.endPlatform)) noWin = false;
+			if (lander.overlaps(ceil.endPlatform)) noWin = false;
 			
 			/**
 			 * COLLECTABLE COLLISION
@@ -212,10 +254,22 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			 * ENEMY COLLIDE WITH PLAYER PROJECTILES DETECTION
 			 */
 			for (int i = 0; i < lander.projectiles.size(); i++) {
-				for (int j = 0; j < enemies.size(); j++) {
+				for (int j = 0; j < enemies.size(); j++)
 					if (lander.projectiles.get(i).overlaps(enemies.get(j))) enemies.remove(j);
+				// BOSS
+				for (int j = 0; j < bosses.size(); j++) {
+					if (lander.projectiles.get(i).overlaps(bosses.get(j))) {
+						bosses.get(j).health--;
+						if (bosses.get(j).health < 1) bosses.remove(j);
+					}
 				}
+				// BOSSES ENEMIES HAVE TO BE ACCESSED THIS WAY B/C IF YOU ACCESS THEM THRU THE BOSSES ARRAYLIST
+				// AFTER YOU KILL THE BOSS, ITS MINIONS BECOME INVINCIBLE
+				for (int j = 0; j < boss.enemies.size(); j++)
+					if (lander.projectiles.get(i).overlaps(boss.enemies.get(j))) boss.enemies.remove(j);
 			}
+			
+					
 
 			repaint();
 			try 
@@ -239,38 +293,49 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		g.setColor(Color.BLACK);
 		ceil.draw(g);
 		
-		locator.draw(g);
+		// LANDER
+		lander.draw(g);
+
+		for (int i = 0; i < lander.getProjectiles().size(); i++)
+			lander.getProjectiles().get(i).draw(g);
+		
+		// PICKUPS
+		for (int i = 0; i < ammo.size(); i++) ammo.get(i).draw(g);
+		for (int i = 0; i < fuel.size(); i++) fuel.get(i).draw(g);
+		for (int i = 0; i < health.size(); i++) health.get(i).draw(g);
 		
 		// enemies
 		for (int i =  0; i < enemies.size(); i++) {
 			enemies.get(i).draw(g);
 		}
 		
-		boss.draw(g);
+		for (int i = 0; i < bosses.size(); i++)
+			bosses.get(i).draw(g);
 		for (int i = 0; i < boss.projectiles.size(); i++) {
 			boss.projectiles.get(i).draw(g);
-		}
+  		}
 		for (int i = 0; i < boss.enemies.size(); i++) {
 			boss.enemies.get(i).draw(g);
 		}
 		
-		g.drawString("(" + locator.x + ", " + locator.y + ")", 10+Camera.x, 20+Camera.y);
+		g.drawString("(" + lander.x + ", " + lander.y + ")", 10+Camera.x, 20+Camera.y);
+		g.drawString("HEALTH: " + lander.health + "		FUEL: " + lander.fuel + "		AMMO: " + lander.bullets, 10+Camera.x, 40+Camera.y);
 		
-		if (locator.overlaps(ceil.endPlatform)) {
+		if (lander.overlaps(ceil.endPlatform)) {
 			g.setColor(Color.GREEN);
 			g.setFont(font);
 			g.drawString(win, 300 + Camera.x, 400 + Camera.y);
 		}
 		
 		for (int i = 0; i < ceil.ceiling.size(); i++) {
-			if (locator.overlaps(ceil.ceiling.get(i))) {
+			if (lander.overlaps(ceil.ceiling.get(i))) {
 				g.setColor(Color.RED);
 				g.setFont(font);
 				g.drawString(lose, 500 + Camera.x, 400 + Camera.y);
 			}
 		}
 		for (int i = 0; i < ceil.floor.size(); i++) {
-			if (locator.overlaps(ceil.floor.get(i))) {
+			if (lander.overlaps(ceil.floor.get(i))) {
 				g.setColor(Color.RED);
 				g.setFont(font);
 				g.drawString(lose, 500 + Camera.x, 400 + Camera.y);
@@ -282,6 +347,104 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			g.setFont(font);
 			g.drawString(lose, 500 + Camera.x, 400 + Camera.y);
 		}
+	}
+	
+	public Image loadImage(String filename) {
+		return Toolkit.getDefaultToolkit().getImage(filename);
+	}
+	
+	public void createSprites() {
+		landerArr = new Image[16];
+		ignitionArr = new Image[3];
+		projectileArr = new Image[4];
+		enemyProjectileArr = new Image[4];
+		ammoPickupArr = new Image[4];
+		fuelPickupArr = new Image[8];
+		healthPickupArr = new Image[6];
+		explosionArr = new Image[4];
+		bigBossArr = new Image[8];
+		smallBossArr = new Image[3];
+		stationaryEnemyArr = new Image[3];
+		kamikazeEnemyArr = new Image[3];
+		
+		for (int i = 1; i < 17; i++)
+			landerArr[i-1] = loadImage("Lander" + i + ".png");
+		for (int i = 1; i < 4; i++)
+			ignitionArr[i-1] = loadImage("ignition" + i + ".png");
+		for (int i = 1; i < 5; i++)
+			projectileArr[i-1] = loadImage("LanderProjectile" + i + ".png");
+		for (int i = 1; i < 5; i++)
+			enemyProjectileArr[i-1] = loadImage("EnemyProjectile" + i + ".png");
+		for (int i = 1; i < 5; i++)
+			ammoPickupArr[i-1] = loadImage("AmmoPickup" + i + ".png");
+		for (int i = 1; i < 9; i++)
+			fuelPickupArr[i-1] = loadImage("FuelPickup" + i + ".png");
+		for (int i = 1; i < 7; i++)
+			healthPickupArr[i-1] = loadImage("HealthPickup" + i + ".png");
+		for (int i = 1; i < 5; i++)
+			explosionArr[i-1] = loadImage("Explosion" + i + ".png");
+		for (int i = 1; i < 9; i++)
+			bigBossArr[i-1] = loadImage("BigBoss" + i + ".png");
+		for (int i = 1; i < 4; i++)
+			smallBossArr[i-1] = loadImage("SmallBoss" + i + ".png");
+		for (int i = 1; i < 4; i++)
+			stationaryEnemyArr[i-1] = loadImage("StationaryShip" + i + ".png");
+		for (int i = 1; i < 4; i++)
+			kamikazeEnemyArr[i-1] = loadImage("MovingShip" + i + ".png");
+		
+		AnimationBk landerAnim = new AnimationBk();
+		AnimationBk ignitionAnim = new AnimationBk();
+		projectileAnim = new AnimationBk();
+		enemyProjectileAnim = new AnimationBk();
+		AnimationBk ammoPickupAnim = new AnimationBk();
+		AnimationBk fuelPickupAnim = new AnimationBk();
+		AnimationBk healthPickupAnim = new AnimationBk();
+		AnimationBk explosionAnim = new AnimationBk();
+		AnimationBk bigBossAnim = new AnimationBk();
+		AnimationBk smallBossAnim = new AnimationBk();
+		AnimationBk stationaryEnemyAnim = new AnimationBk();
+		AnimationBk kamikazeEnemyAnim = new AnimationBk();
+		for (int i = 0; i < landerArr.length; i++)
+			landerAnim.addFrame(landerArr[i], 100);
+		for (int i = 0; i < ignitionArr.length; i++)
+			ignitionAnim.addFrame(ignitionArr[i], 100);
+		for (int i = 0; i < projectileArr.length; i++)
+			projectileAnim.addFrame(projectileArr[i], 100);
+		for (int i = 0; i < enemyProjectileArr.length; i++)
+			enemyProjectileAnim.addFrame(enemyProjectileArr[i], 100);
+		for (int i = 0; i < ammoPickupArr.length; i++)
+			ammoPickupAnim.addFrame(ammoPickupArr[i], 100);
+		for (int i = 0; i < fuelPickupArr.length; i++)
+			fuelPickupAnim.addFrame(fuelPickupArr[i], 100);
+		for (int i = 0; i < healthPickupArr.length; i++)
+			healthPickupAnim.addFrame(healthPickupArr[i], 100);
+		for (int i = 0; i < explosionArr.length; i++)
+			explosionAnim.addFrame(explosionArr[i], 100);
+		for (int i = 0; i < bigBossArr.length; i++)
+			bigBossAnim.addFrame(bigBossArr[i], 100);
+		for (int i = 0; i < smallBossArr.length; i++)
+			smallBossAnim.addFrame(smallBossArr[i], 100);
+		for (int i = 0; i < stationaryEnemyArr.length; i++)
+			stationaryEnemyAnim.addFrame(stationaryEnemyArr[i], 100);
+		for (int i = 0; i < kamikazeEnemyArr.length; i++)
+			kamikazeEnemyAnim.addFrame(kamikazeEnemyArr[i], 100);
+		
+		lander.landerImage = landerAnim;
+		lander.flame = ignitionAnim;
+		lander.crash = explosionAnim;
+		
+		Projectiles.projectileImage = projectileAnim;
+		
+		boss.enemySprite = bigBossAnim;
+		boss.crash = explosionAnim;
+		boss.flame = ignitionAnim;
+		
+		KamikazeEnemy.kamikazeSprite = kamikazeEnemyAnim;
+		StationaryEnemy.stationarySprite = stationaryEnemyAnim;
+		EnemyProjectiles.enemyProjectileImage = enemyProjectileAnim;
+		Ammo.ammoSprite = ammoPickupAnim;
+		Fuel.fuelSprite = fuelPickupAnim;
+		Health.healthSprite = healthPickupAnim;
 	}
 
 	@Override
