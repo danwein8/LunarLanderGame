@@ -368,21 +368,21 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		
 		for (int i = 0; i < ceil.ceiling.size(); i++) {
 			if (lander.overlaps(ceil.ceiling.get(i))) {
-				g.setColor(Color.RED);
+				g.setColor(Color.WHITE);
 				g.setFont(font);
 				g.drawString(lose, 500 + Camera.x, 400 + Camera.y);
 			}
 		}
 		for (int i = 0; i < ceil.floor.size(); i++) {
 			if (lander.overlaps(ceil.floor.get(i))) {
-				g.setColor(Color.RED);
+				g.setColor(Color.WHITE);
 				g.setFont(font);
 				g.drawString(lose, 500 + Camera.x, 400 + Camera.y);
 			}
 		}
 
 		if (lander.health == 0) {
-			g.setColor(Color.RED);
+			g.setColor(Color.WHITE);
 			g.setFont(font);
 			g.drawString(lose, 500 + Camera.x, 400 + Camera.y);
 		}
