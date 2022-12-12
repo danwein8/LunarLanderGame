@@ -12,7 +12,7 @@ public class Projectiles extends Rect {
 	}
 	
 	public void launchProjectile() {
-		moveRight(50);
+		moveRight(30);
 	}
 	
 	public void launchProjectileL() {

@@ -23,7 +23,7 @@ public class StationaryEnemy extends Enemy {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)x, (int)y, w, h);
+		//g.drawRect((int)x, (int)y, w, h);
 		g.drawImage(stationarySprite.getImage(), (int)x, (int)y, null);
 	}
 }

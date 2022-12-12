@@ -10,6 +10,8 @@ public class Ceiling {
 	ArrayList<Rect> ceiling = new ArrayList<Rect>();
 	Rect endPlatform;
 	
+	static AnimationBk end;
+	
 	private GraphicsDevice device;
 	private DisplayMode mode;
 	/**
@@ -105,7 +107,8 @@ public class Ceiling {
 			g.drawRect((int)ceiling.get(i).x, (int)ceiling.get(i).y, ceiling.get(i).w, ceiling.get(i).h);
 			g.drawRect((int)floor.get(i).x, (int)floor.get(i).y, floor.get(i).w, floor.get(i).h);
 		}
-		g.drawRect(endDist * difficulty, endPlatY, endPlatW, endPlatH);
+		//g.drawRect(endDist * difficulty, endPlatY, endPlatW, endPlatH);
+		g.drawImage(end.getImage(), endDist * difficulty, endPlatY, null);
 	}
 
 }

@@ -27,6 +27,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	
 	//LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20, 2);
 	LunarLander lander;
+	UI ui;
 	
 	ArrayList<Ammo> ammo = new ArrayList<Ammo>();
 	ArrayList<Fuel> fuel = new ArrayList<Fuel>();
@@ -37,7 +38,8 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	Ceiling ceil = new Ceiling(0, 0);
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	ArrayList<Boss> bosses = new ArrayList<Boss>();
-	Boss boss = new Boss(2000 * ceil.difficulty, 250, 20, 300, null, 20 * ceil.difficulty, ceil.difficulty);
+	Boss boss = new Boss(2000 * ceil.difficulty, 250, 20, 128, null, 20 * ceil.difficulty, ceil.difficulty);
+	Boss boss2 = new Boss(2000 * ceil.difficulty, 500, 20, 128, null, 20 * ceil.difficulty, ceil.difficulty);
 	
 	// slows down update speeds
 	int counter = 0;
@@ -54,18 +56,21 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	String lose = "YOU CRASHED AND DIED";
 	String win = "YOU SUCCESSFULLY LANDED AND EVERYONE LIVED"; 
 	
-	Image[] landerArr = new Image[16];
-	Image[] ignitionArr = new Image[3];
-	Image[] projectileArr = new Image[4];
-	Image[] enemyProjectileArr = new Image[4];
-	Image[] ammoPickupArr = new Image[4];
-	Image[] fuelPickupArr = new Image[8];
-	Image[] healthPickupArr = new Image[6];
-	Image[] explosionArr = new Image[4];
-	Image[] bigBossArr = new Image[8];
-	Image[] smallBossArr = new Image[3];
-	Image[] stationaryEnemyArr = new Image[3];
-	Image[] kamikazeEnemyArr = new Image[3];
+	Image[] landerArr;
+	Image[] ignitionArr;
+	Image[] projectileArr;
+	Image[] enemyProjectileArr;
+	Image[] ammoPickupArr;
+	Image[] fuelPickupArr;
+	Image[] healthPickupArr;
+	Image[] explosionArr;
+	Image[] bigBossArr;
+	Image[] smallBossArr;
+	Image[] stationaryEnemyArr;
+	Image[] kamikazeEnemyArr;
+	Image[] platformArr;
+	Image[] heartArr;
+	Image[] emptyHeartArr;
 	
 	AnimationBk projectileAnim = new AnimationBk();
 	AnimationBk enemyProjectileAnim = new AnimationBk();
@@ -80,6 +85,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		enemies.add(new KamikazeEnemy(1000, 200, 20, 40, null, 1));
 		enemies.add(new KamikazeEnemy(1000, 500, 20, 40, null, 1));
 		bosses.add(boss);
+		bosses.add(boss2);
 		//enemies.add(new Boss(2000 * ceil.difficulty, 250, 200, 300, null, 20 * ceil.difficulty, ceil.difficulty));
 		ammo.add(new Ammo(400, 400, 10, 10, 50));
 		ammo.add(new Ammo(450, 300, 10, 10, 50));
@@ -90,6 +96,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		
 		lander = new LunarLander(50, 200, 20, 20, 30.0, 100.0, 20, 2);
 		createSprites();
+		ui = new UI(60, 60, lander);
 		
 		moveUp = new GameAction("moveUp");
 		moveLeft = new GameAction("moveLeft");
@@ -134,6 +141,9 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			lander.landerImage.update(elapsedTime);
 			lander.flame.update(elapsedTime);
 			boss.enemySprite.update(elapsedTime);
+			Ceiling.end.update(elapsedTime);
+			UI.heart.update(elapsedTime);
+			UI.emptyHeart.update(elapsedTime);
 			//for (int i = 0; i < lander.projectiles.size(); i++) lander.projectiles.get(i).projectileImage.update(elapsedTime);
 			//for (int i = 0; i < boss.enemies.size(); i++) boss.enemies.get(i).enemySprite.update(elapsedTime);
 			//for (int i = 0; i < boss.projectiles.size(); i++) boss.projectiles.get(i).enemyProjectileImage.update(elapsedTime);
@@ -168,6 +178,8 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 				for (int i = 0; i < enemies.size(); i++) enemies.get(i).update();
 				for (int i = 0; i < boss.enemies.size(); i++) boss.enemies.get(i).update();
 				for (int i = 0; i < boss.projectiles.size(); i++) boss.projectiles.get(i).launchProjectileL();
+				for (int i = 0; i < boss2.enemies.size(); i++) boss2.enemies.get(i).update();
+				for (int i = 0; i < boss2.projectiles.size(); i++) boss2.projectiles.get(i).launchProjectileL();
 			}  
 			if (counter == target2) {
 				for (int i = 0; i < enemies.size(); i++)
@@ -176,6 +188,8 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 					if (enemies.get(i) instanceof KamikazeEnemy) enemies.get(i).update();
 				for (int i = 0; i < boss.enemies.size(); i++) boss.enemies.get(i).update();
 				for (int i = 0; i < boss.projectiles.size(); i++) boss.projectiles.get(i).launchProjectileL();
+				for (int i = 0; i < boss2.enemies.size(); i++) boss2.enemies.get(i).update();
+				for (int i = 0; i < boss2.projectiles.size(); i++) boss2.projectiles.get(i).launchProjectileL();
 				counter = 0;
 			}
 			counter++;
@@ -208,6 +222,20 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 				if (lander.overlaps(boss.enemies.get(i))) {
 					lander.health--;
 					boss.enemies.remove(i);
+					if (lander.health == 0) noWin = false;
+				}
+			}
+			for (int i = 0; i < boss2.projectiles.size(); i++) {
+				if (lander.overlaps(boss2.projectiles.get(i))) {
+					lander.health--;
+					boss2.projectiles.remove(i);
+					if (lander.health == 0) noWin = false;
+				}
+			}
+			for (int i = 0; i < boss2.enemies.size(); i++) {
+				if (lander.overlaps(boss2.enemies.get(i))) {
+					lander.health--;
+					boss2.enemies.remove(i);
 					if (lander.health == 0) noWin = false;
 				}
 			}
@@ -267,6 +295,8 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 				// AFTER YOU KILL THE BOSS, ITS MINIONS BECOME INVINCIBLE
 				for (int j = 0; j < boss.enemies.size(); j++)
 					if (lander.projectiles.get(i).overlaps(boss.enemies.get(j))) boss.enemies.remove(j);
+				for (int j = 0; j < boss2.enemies.size(); j++)
+					if (lander.projectiles.get(i).overlaps(boss2.enemies.get(j))) boss2.enemies.remove(j);
 			}
 			
 					
@@ -289,6 +319,8 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	}
 	
 	public void paint(Graphics g) {
+		g.setColor(Color.decode("#FF00FF"));
+		g.fillRect(0, 0, 20000, 3000);
 
 		g.setColor(Color.BLACK);
 		ceil.draw(g);
@@ -317,9 +349,16 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		for (int i = 0; i < boss.enemies.size(); i++) {
 			boss.enemies.get(i).draw(g);
 		}
+		for (int i = 0; i < boss2.projectiles.size(); i++) {
+			boss2.projectiles.get(i).draw(g);
+  		}
+		for (int i = 0; i < boss2.enemies.size(); i++) {
+			boss2.enemies.get(i).draw(g);
+		}
 		
 		g.drawString("(" + lander.x + ", " + lander.y + ")", 10+Camera.x, 20+Camera.y);
 		g.drawString("HEALTH: " + lander.health + "		FUEL: " + lander.fuel + "		AMMO: " + lander.bullets, 10+Camera.x, 40+Camera.y);
+		ui.draw(g);
 		
 		if (lander.overlaps(ceil.endPlatform)) {
 			g.setColor(Color.GREEN);
@@ -366,6 +405,9 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		smallBossArr = new Image[3];
 		stationaryEnemyArr = new Image[3];
 		kamikazeEnemyArr = new Image[3];
+		platformArr = new Image[4];
+		heartArr = new Image[1];
+		emptyHeartArr = new Image[1];
 		
 		for (int i = 1; i < 17; i++)
 			landerArr[i-1] = loadImage("Lander" + i + ".png");
@@ -388,9 +430,15 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		for (int i = 1; i < 4; i++)
 			smallBossArr[i-1] = loadImage("SmallBoss" + i + ".png");
 		for (int i = 1; i < 4; i++)
-			stationaryEnemyArr[i-1] = loadImage("StationaryShip" + i + ".png");
+			stationaryEnemyArr[i-1] = loadImage("StaionaryShip" + i + ".png");
 		for (int i = 1; i < 4; i++)
 			kamikazeEnemyArr[i-1] = loadImage("MovingShip" + i + ".png");
+		for (int i = 1; i < 4; i++)
+			platformArr[i-1] = loadImage("Platform" + i + ".png");
+		for (int i = 1; i < 1; i++)
+			heartArr[i-1] = loadImage("FullHeart.png");
+		for (int i = 1; i < 1; i++)
+			emptyHeartArr[i-1] = loadImage("EmptyHeart.png");
 		
 		AnimationBk landerAnim = new AnimationBk();
 		AnimationBk ignitionAnim = new AnimationBk();
@@ -404,6 +452,10 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		AnimationBk smallBossAnim = new AnimationBk();
 		AnimationBk stationaryEnemyAnim = new AnimationBk();
 		AnimationBk kamikazeEnemyAnim = new AnimationBk();
+		AnimationBk platformAnim = new AnimationBk();
+		AnimationBk heartAnim = new AnimationBk();
+		AnimationBk emptyHeartAnim = new AnimationBk();
+		
 		for (int i = 0; i < landerArr.length; i++)
 			landerAnim.addFrame(landerArr[i], 100);
 		for (int i = 0; i < ignitionArr.length; i++)
@@ -428,6 +480,12 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			stationaryEnemyAnim.addFrame(stationaryEnemyArr[i], 100);
 		for (int i = 0; i < kamikazeEnemyArr.length; i++)
 			kamikazeEnemyAnim.addFrame(kamikazeEnemyArr[i], 100);
+		for (int i = 0; i < platformArr.length; i++)
+			platformAnim.addFrame(platformArr[i], 100);
+		for (int i = 0; i < heartArr.length; i++)
+			heartAnim.addFrame(heartArr[i], 10000);
+		for (int i = 0; i < emptyHeartArr.length; i++)
+			emptyHeartAnim.addFrame(emptyHeartArr[i], 10000);
 		
 		lander.landerImage = landerAnim;
 		lander.flame = ignitionAnim;
@@ -438,6 +496,9 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		boss.enemySprite = bigBossAnim;
 		boss.crash = explosionAnim;
 		boss.flame = ignitionAnim;
+		boss2.enemySprite = bigBossAnim;
+		boss2.crash = explosionAnim;
+		boss2.flame = ignitionAnim;
 		
 		KamikazeEnemy.kamikazeSprite = kamikazeEnemyAnim;
 		StationaryEnemy.stationarySprite = stationaryEnemyAnim;
@@ -445,6 +506,10 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		Ammo.ammoSprite = ammoPickupAnim;
 		Fuel.fuelSprite = fuelPickupAnim;
 		Health.healthSprite = healthPickupAnim;
+		
+		Ceiling.end = platformAnim;
+		UI.heart = heartAnim;
+		UI.emptyHeart = emptyHeartAnim;
 	}
 
 	@Override

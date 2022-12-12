@@ -51,7 +51,7 @@ public class Boss extends Enemy {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)x, (int)y, w, h);
+		//g.drawRect((int)x, (int)y, w, h);
 		g.drawImage(enemySprite.getImage(), (int)x, (int)y, null);
 	}
 	

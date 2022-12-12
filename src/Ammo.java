@@ -22,8 +22,8 @@ public class Ammo extends Item {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)(x), (int)(y), w, h);
-		g.drawString("A", (int)(x + 1), (int)(y + h));
+		//g.drawRect((int)(x), (int)(y), w, h);
+		//g.drawString("A", (int)(x + 1), (int)(y + h));
 		g.drawImage(ammoSprite.getImage(), (int)x, (int)y, null);
 	}	
 }

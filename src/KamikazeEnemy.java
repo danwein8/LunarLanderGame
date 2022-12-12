@@ -24,7 +24,7 @@ public class KamikazeEnemy extends Enemy {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)x, (int)y, w, h);
-		g.drawImage(kamikazeSprite.getImage(), (int)x, (int)y, null);
+		//g.drawRect((int)x, (int)y, w, h);
+		g.drawImage(kamikazeSprite.getImage(), (int)x, (int)y+4, null);
 	}
 }

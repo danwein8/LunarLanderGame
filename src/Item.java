@@ -32,7 +32,7 @@ public abstract class Item extends Rect {
 	public abstract void pickUp(LunarLander lander);
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)(x), (int)(y), w, h);
+		//g.drawRect((int)(x), (int)(y), w, h);
 		g.drawImage(sprite.getImage(), (int)x, (int)y, null);
 	}
 	

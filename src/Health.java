@@ -15,8 +15,8 @@ public class Health extends Item {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)(x), (int)(y), w, h);
-		g.drawString("+", (int)(x + 1), (int)(y + h));
+		//g.drawRect((int)(x), (int)(y), w, h);
+		//g.drawString("+", (int)(x + 1), (int)(y + h));
 		g.drawImage(healthSprite.getImage(), (int)x, (int)y, null);
 	}	
 }
