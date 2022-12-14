@@ -2,7 +2,7 @@ import java.awt.Graphics;
 
 public class EnemyProjectiles extends Rect {
 	
-private final long createdMillis;
+	private final long createdMillis;
 	
 	static AnimationBk enemyProjectileImage;
 
@@ -12,7 +12,7 @@ private final long createdMillis;
 	}
 	
 	public void launchProjectile() {
-		moveRight(50);
+		moveRight(30);
 	}
 	
 	public void launchProjectileL() {
@@ -25,7 +25,7 @@ private final long createdMillis;
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)(x), (int)(y), w, h);
+		//g.drawRect((int)(x), (int)(y), w, h);
 		g.drawImage(enemyProjectileImage.getImage(), (int)x, (int)y, null);
 	}
 

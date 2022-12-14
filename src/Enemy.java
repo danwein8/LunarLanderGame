@@ -48,7 +48,7 @@ public abstract class Enemy extends Rect {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)x, (int)y, w, h);
+		//g.drawRect((int)x, (int)y, w, h);
 		g.drawImage(enemySprite.getImage(), (int)x, (int)y, null);
 	}
 

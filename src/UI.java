@@ -1,9 +1,8 @@
 import java.awt.Graphics;
 
 public class UI {
-	
-	static AnimationBk heart;
-	static AnimationBk emptyHeart;
+
+	AnimationBk image;
 	LunarLander lander;
 	
 	int x;
@@ -16,18 +15,7 @@ public class UI {
 	}
 	
 	public void draw(Graphics g) {
-		if (lander.health == 2) {
-			g.drawImage(heart.getImage(), (int)x, (int)y, null);
-			g.drawImage(heart.getImage(), (int)x + 20, (int)y, null);
-		}
-		if (lander.health == 1) {
-			g.drawImage(heart.getImage(), (int)x, (int)y, null);
-			g.drawImage(emptyHeart.getImage(), (int)x + 20, (int)y, null);
-		}
-		else {
-			g.drawImage(emptyHeart.getImage(), (int)x, (int)y, null);
-			g.drawImage(emptyHeart.getImage(), (int)x + 20, (int)y, null);
-		}
+		g.drawImage(image.getImage(), x+Camera.x, y+Camera.y, null);
 	}
 
 }

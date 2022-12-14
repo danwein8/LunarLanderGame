@@ -1,17 +1,22 @@
 import java.awt.Graphics;
-import java.awt.Image;
 
 public class Health extends Item {
 
 	static AnimationBk healthSprite;
 	
+	SoundManager sm = new SoundManager();
+	
 	public Health(double x, double y, int w, int h, int strength) {
 		super(x, y, w, h, strength);
+		
 	}
 
 	@Override
 	public void pickUp(LunarLander lander) {
-		lander.addHealth(h);
+		if (lander.health < 2) lander.addHealth(strength);
+		
+		sm.setFile(1);
+		sm.play();
 	}
 	
 	public void draw(Graphics g) {

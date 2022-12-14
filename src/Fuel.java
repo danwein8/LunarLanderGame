@@ -1,5 +1,4 @@
 import java.awt.Graphics;
-import java.awt.Image;
 
 /**
  * Fuel class that extends Item, allows the player to fill the lander up
@@ -13,6 +12,8 @@ import java.awt.Image;
 public class Fuel extends Item {
 	
 	static AnimationBk fuelSprite;
+	
+	SoundManager sm = new SoundManager();
 
 	public Fuel(double x, double y, int w, int h, int strength) {
 		super(x, y, w, h, strength);
@@ -21,6 +22,9 @@ public class Fuel extends Item {
 	@Override
 	public void pickUp(LunarLander lander) {
 		lander.addFuel(getStrength());
+		
+		sm.setFile(1);
+		sm.play();
 		
 	}
 	

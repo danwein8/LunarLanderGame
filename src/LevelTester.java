@@ -3,7 +3,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class LevelTester extends Applet implements Runnable, KeyListener 
+/**
+ * MAIN TESTER FOR THE GAME
+ * @author danielweiner
+ *
+ */
+public class LevelTester extends Applet implements Runnable 
 {
 	
 	private static final long serialVersionUID = 1L;
@@ -23,11 +28,16 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 	GameAction fire;
 	InputManager inputManager = new InputManager(this);
 	
+	SoundManager sm = new SoundManager();
+	
 	double gravity = 0.1;
 	
 	//LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20, 2);
 	LunarLander lander;
-	UI ui;
+	UIFull uifull;
+	UIFull uifull2;
+	UIEmpty uiempty;
+	UIEmpty uiempty2;
 	
 	ArrayList<Ammo> ammo = new ArrayList<Ammo>();
 	ArrayList<Fuel> fuel = new ArrayList<Fuel>();
@@ -93,11 +103,18 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		fuel.add(new Fuel(300, 300, 10, 10, 10));
 		fuel.add(new Fuel(500, 400, 10, 10, 10));
 		health.add(new Health(600, 300, 10, 10, 1));
+		health.add(new Health(800, 300, 10, 10, 1));
 		
 		lander = new LunarLander(50, 200, 20, 20, 30.0, 100.0, 20, 2);
 		createSprites();
-		ui = new UI(60, 60, lander);
+		uifull = new UIFull(60, 60, lander);
+		uifull2 = new UIFull(90, 60, lander);
+		uiempty = new UIEmpty(60, 60, lander);
+		uiempty2 = new UIEmpty(90, 60, lander);
 		
+		/**
+		 * INPUT MANAGER
+		 */
 		moveUp = new GameAction("moveUp");
 		moveLeft = new GameAction("moveLeft");
     	moveRight = new GameAction("moveRight");
@@ -115,6 +132,10 @@ public class LevelTester extends Applet implements Runnable, KeyListener
     	inputManager.mapToKey(moveRight, KeyEvent.VK_D);
     	inputManager.mapToKey(moveDown, KeyEvent.VK_S);
     	inputManager.mapToKey(fire, KeyEvent.VK_SPACE);
+    	
+    	sm.setFile(0);
+		sm.play();
+		sm.loop();
 		
 		offscreen_i = createImage((mode.getWidth() * 15), mode.getHeight());
 		
@@ -122,7 +143,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 				
 		requestFocus();
 		
-		addKeyListener(this);
+		addKeyListener(inputManager);
 		
 		t = new Thread(this);
 		
@@ -140,10 +161,11 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			currTime += elapsedTime;
 			lander.landerImage.update(elapsedTime);
 			lander.flame.update(elapsedTime);
+			lander.crash.update(elapsedTime);
 			boss.enemySprite.update(elapsedTime);
 			Ceiling.end.update(elapsedTime);
-			UI.heart.update(elapsedTime);
-			UI.emptyHeart.update(elapsedTime);
+			UIFull.heart.update(elapsedTime);
+			UIEmpty.emptyHeart.update(elapsedTime);
 			//for (int i = 0; i < lander.projectiles.size(); i++) lander.projectiles.get(i).projectileImage.update(elapsedTime);
 			//for (int i = 0; i < boss.enemies.size(); i++) boss.enemies.get(i).enemySprite.update(elapsedTime);
 			//for (int i = 0; i < boss.projectiles.size(); i++) boss.projectiles.get(i).enemyProjectileImage.update(elapsedTime);
@@ -168,8 +190,9 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			 //if (moveUp.isPressed()) Camera.moveUp(5);
 			 //if (moveDown.isPressed()) Camera.moveDown(5);
 			 
-			 for (int i = 0; i < lander.getProjectiles().size(); i++)
+			 for (int i = 0; i < lander.getProjectiles().size(); i++) {
 				 lander.getProjectiles().get(i).launchProjectile();
+			 }
 
 			/**
 			 * ENEMY UPDATE
@@ -208,35 +231,50 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 				if (lander.overlaps(enemies.get(i))) {
 					lander.health--;
 					enemies.remove(i);
-					if (lander.health == 0) noWin = false;
+					if (lander.health == 0) {
+						playGameOver();
+						noWin = false;
+					}
 				}
 			}
 			for (int i = 0; i < boss.projectiles.size(); i++) {
 				if (lander.overlaps(boss.projectiles.get(i))) {
 					lander.health--;
 					boss.projectiles.remove(i);
-					if (lander.health == 0) noWin = false;
+					if (lander.health == 0) {
+						playGameOver();
+						noWin = false;
+					}
 				}
 			}
 			for (int i = 0; i < boss.enemies.size(); i++) {
 				if (lander.overlaps(boss.enemies.get(i))) {
 					lander.health--;
 					boss.enemies.remove(i);
-					if (lander.health == 0) noWin = false;
+					if (lander.health == 0) {
+						playGameOver();
+						noWin = false;
+					}
 				}
 			}
 			for (int i = 0; i < boss2.projectiles.size(); i++) {
 				if (lander.overlaps(boss2.projectiles.get(i))) {
 					lander.health--;
 					boss2.projectiles.remove(i);
-					if (lander.health == 0) noWin = false;
+					if (lander.health == 0) {
+						playGameOver();
+						noWin = false;
+					}
 				}
 			}
 			for (int i = 0; i < boss2.enemies.size(); i++) {
 				if (lander.overlaps(boss2.enemies.get(i))) {
 					lander.health--;
 					boss2.enemies.remove(i);
-					if (lander.health == 0) noWin = false;
+					if (lander.health == 0) {
+						playGameOver();
+						noWin = false;
+					}
 				}
 			}
 			
@@ -246,15 +284,20 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			 */
 			for (int i = 0; i < ceil.ceiling.size(); i++) {
 				if (lander.overlaps(ceil.ceiling.get(i))) {
+					playGameOver();
 					noWin = false;
 				}
 			}
 			for (int i = 0; i < ceil.floor.size(); i++) {
 				if (lander.overlaps(ceil.floor.get(i))) {
+					playGameOver();
 					noWin = false;
 				}
 			}
-			if (lander.overlaps(ceil.endPlatform)) noWin = false;
+			if (lander.overlaps(ceil.endPlatform)) {
+				playGameOver();
+				noWin = false;
+			}
 			
 			/**
 			 * COLLECTABLE COLLISION
@@ -287,7 +330,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 				// BOSS
 				for (int j = 0; j < bosses.size(); j++) {
 					if (lander.projectiles.get(i).overlaps(bosses.get(j))) {
-						bosses.get(j).health--;
+						bosses.get(j).lowerHealth();
 						if (bosses.get(j).health < 1) bosses.remove(j);
 					}
 				}
@@ -325,8 +368,12 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		g.setColor(Color.BLACK);
 		ceil.draw(g);
 		
+		// TRIED TO DRAW THE CRASH
+		if (lander.getHealth() < 1) lander.drawCrash(g);
+		
 		// LANDER
 		lander.draw(g);
+		
 
 		for (int i = 0; i < lander.getProjectiles().size(); i++)
 			lander.getProjectiles().get(i).draw(g);
@@ -341,8 +388,10 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			enemies.get(i).draw(g);
 		}
 		
-		for (int i = 0; i < bosses.size(); i++)
+		for (int i = 0; i < bosses.size(); i++) {
+			if (bosses.get(i).getHealth() < 1) bosses.get(i).drawCrash(g);
 			bosses.get(i).draw(g);
+		}
 		for (int i = 0; i < boss.projectiles.size(); i++) {
 			boss.projectiles.get(i).draw(g);
   		}
@@ -358,7 +407,18 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		
 		g.drawString("(" + lander.x + ", " + lander.y + ")", 10+Camera.x, 20+Camera.y);
 		g.drawString("HEALTH: " + lander.health + "		FUEL: " + lander.fuel + "		AMMO: " + lander.bullets, 10+Camera.x, 40+Camera.y);
-		ui.draw(g);
+		if (lander.getHealth() == 2) {
+			uifull.draw(g);
+			uifull2.draw(g);
+		}
+		if (lander.getHealth() == 1) {
+			uifull.draw(g);
+			uiempty2.draw(g);
+		}
+		if (lander.getHealth() == 0) {
+			uiempty.draw(g);
+			uiempty2.draw(g);
+		}
 		
 		if (lander.overlaps(ceil.endPlatform)) {
 			g.setColor(Color.GREEN);
@@ -386,6 +446,11 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			g.setFont(font);
 			g.drawString(lose, 500 + Camera.x, 400 + Camera.y);
 		}
+	}
+	
+	public void playGameOver() {
+		sm.setFile(4);
+		sm.play();
 	}
 	
 	public Image loadImage(String filename) {
@@ -435,9 +500,9 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 			kamikazeEnemyArr[i-1] = loadImage("MovingShip" + i + ".png");
 		for (int i = 1; i < 4; i++)
 			platformArr[i-1] = loadImage("Platform" + i + ".png");
-		for (int i = 1; i < 1; i++)
+		for (int i = 1; i < 2; i++)
 			heartArr[i-1] = loadImage("FullHeart.png");
-		for (int i = 1; i < 1; i++)
+		for (int i = 1; i < 2; i++)
 			emptyHeartArr[i-1] = loadImage("EmptyHeart.png");
 		
 		AnimationBk landerAnim = new AnimationBk();
@@ -508,21 +573,7 @@ public class LevelTester extends Applet implements Runnable, KeyListener
 		Health.healthSprite = healthPickupAnim;
 		
 		Ceiling.end = platformAnim;
-		UI.heart = heartAnim;
-		UI.emptyHeart = emptyHeartAnim;
+		UIFull.heart = heartAnim;
+		UIEmpty.emptyHeart = emptyHeartAnim;
 	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-	
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {	}
-	
 }

@@ -1,6 +1,4 @@
 import java.awt.Graphics;
-import java.awt.Image;
-import java.util.*;
 
 /**
  * Ammo class that extends Item, allows the player to pick up more bullets
@@ -11,6 +9,8 @@ import java.util.*;
 public class Ammo extends Item {
 	
 	static AnimationBk ammoSprite;
+	
+	SoundManager sm = new SoundManager();
 
 	public Ammo(double x, double y, int w, int h, int strength) {
 		super(x, y, w, h, strength);
@@ -19,6 +19,9 @@ public class Ammo extends Item {
 	@Override
 	public void pickUp(LunarLander lander) {
 		lander.addAmmo(getStrength());
+		
+		sm.setFile(1);
+		sm.play();
 	}
 	
 	public void draw(Graphics g) {

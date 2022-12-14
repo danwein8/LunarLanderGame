@@ -3,6 +3,8 @@ import java.awt.*;
 public class GameTest2 extends GameBase 
 {
 
+	private static final long serialVersionUID = 1L;
+
 	boolean noWin = true;
 
 	LunarLander lander = new LunarLander(50, 50, 20, 20, 30.0, 100.0, 20, 2);

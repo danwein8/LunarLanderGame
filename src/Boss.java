@@ -14,6 +14,7 @@ public class Boss extends Enemy {
 	ArrayList<EnemyProjectiles> projectiles = new ArrayList<EnemyProjectiles>();
 	ArrayList<KamikazeEnemy> enemies = new ArrayList<KamikazeEnemy>();
 	int difficultyTimerScalar;
+	SoundManager sm = new SoundManager();
 
 	public Boss(double x, double y, int w, int h, LunarLander target, int health, int difficulty) {
 		super(x, y, w, h, target, health);
@@ -35,6 +36,8 @@ public class Boss extends Enemy {
 	public void shoot() {
 		Random rand = new Random();
 		projectiles.add(new EnemyProjectiles(this.x + (this.w / 2), rand.nextInt(600) + 200, 5, 5));
+		sm.setFile(3);
+		sm.play();
 	}
 	
 	public ArrayList<EnemyProjectiles> getProjectiles() {
@@ -45,9 +48,19 @@ public class Boss extends Enemy {
 		projectiles.remove(index);
 	}
 	
+	public void lowerHealth() {
+		health--;
+		sm.setFile(2);
+		sm.play();
+	}
+	
 	public void launchKamikaze() {
 		Random rand = new Random();
 		enemies.add(new KamikazeEnemy(this.x, rand.nextInt(600) + 200, 20, 40, null, 1));
+	}
+	
+	public void drawCrash(Graphics g) {
+		g.drawImage(crash.getImage(), (int)x, (int)y, null);
 	}
 	
 	public void draw(Graphics g) {

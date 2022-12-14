@@ -4,6 +4,8 @@ import java.awt.event.*;
 
 public abstract class GameBase extends Applet implements Runnable, KeyListener
 {
+	private static final long serialVersionUID = 1L;
+
 	Thread t;
 	
 	Image    offscreen_Image;
@@ -114,7 +116,7 @@ public abstract class GameBase extends Applet implements Runnable, KeyListener
 			
    		try
    		{
-   			t.sleep(15);
+   			Thread.sleep(15);
    		}
    		catch(Exception x) {};
 		}

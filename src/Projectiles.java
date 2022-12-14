@@ -25,7 +25,7 @@ public class Projectiles extends Rect {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawRect((int)(x), (int)(y), w, h);
+		//g.drawRect((int)(x), (int)(y), w, h);
 		g.drawImage(projectileImage.getImage(), (int)x, (int)y, null);
 	}
 

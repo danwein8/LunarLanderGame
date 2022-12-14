@@ -84,8 +84,7 @@ public class LevelRect extends Rect {
 	
 	public boolean collision(Rect rect) {
 		Point screenSectors = new Point(0, 0);
-		Rect r;
-		
+
 		
 		for (screenSectors.x = 0; screenSectors.x < sectorsX; screenSectors.x++) {
 			for (screenSectors.y = 0; screenSectors.y < sectorsY; screenSectors.y++) {

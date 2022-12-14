@@ -29,6 +29,8 @@ public class LunarLander extends Rect
 	
 	ArrayList<Projectiles> projectiles = new ArrayList<Projectiles>();
 	
+	SoundManager sm = new SoundManager();
+	
 	
 	public LunarLander(double x, double y, int w, int h, double weight, double fuel, int bullets, int health) {
 		super(x, y, w, h);
@@ -53,6 +55,7 @@ public class LunarLander extends Rect
 	// set the weight based on the remaining fuel, less fuel means lighter lander means
 	// more responsive lift and moving left and right
 	public double getCurrentWeight(double weight, double fuel) {
+		// TODO: FUEL / 1.0 IS JUST FUEL
 		return weight + (fuel / 1.0);
 	}
 	
@@ -85,6 +88,8 @@ public class LunarLander extends Rect
 		projectiles.add(new Projectiles(this.x + (this.w / 2), this.y, 5, 5));
 		
 		bullets--;
+		sm.setFile(3);
+		sm.play();
 	}
 	
 	public ArrayList<Projectiles> getProjectiles()
@@ -173,6 +178,10 @@ public class LunarLander extends Rect
 	
 	public void setCrashAnim(AnimationBk animIn) {
 		this.crash = animIn;
+	}
+	
+	public void drawCrash(Graphics g) {
+		g.drawImage(crash.getImage(), (int)x, (int)y, null);
 	}
 	
 	public void draw(Graphics g) {

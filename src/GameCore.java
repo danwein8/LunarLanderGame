@@ -1,5 +1,4 @@
 import java.awt.*;
-import javax.swing.ImageIcon;
 /**
     Simple abstract class used for testing. Subclasses should
     implement the draw() method.
